@@ -21,7 +21,7 @@
     <div class="navlinks">
       <a href="pages/how-it-works.html">How it works</a>
       <a href="pages/verify.html">Verify</a>
-      <a href="#seal" class="btn btn-stamp btn-small">Seal a file</a>
+      <a href="pages/seal.html" class="btn btn-stamp btn-small">Seal a file</a>
     </div>
   </nav>
 </header>
@@ -33,7 +33,7 @@
       <h1 class="hero-head">Prove a file existed.<br>Prove it hasn't <em>changed</em>.</h1>
       <p class="hero-sub">Drop a file and ProofDrop creates its fingerprint in your browser. For this v1 step, you can download a local proof record and verify it later without uploading the file.</p>
       <div class="hero-ctas">
-        <a href="#seal" class="btn btn-stamp">Seal a file</a>
+        <a href="pages/seal.html" class="btn btn-stamp">Seal a file</a>
         <a href="pages/verify.html" class="btn btn-ghost">Verify a proof</a>
       </div>
       <div class="hero-note">Your file is hashed in your browser. It never leaves your device.</div>
@@ -60,36 +60,6 @@
         <div class="rline"><span class="rk">FILE</span><span class="rv">contract_final.pdf</span></div>
         <div class="rline"><span class="rk">FINGERPRINT</span><span class="rv">9f2c4d1a...e88c</span></div>
         <div class="rline"><span class="rk">SEALED AT</span><span class="rv">2026-08-24 09:14 UTC</span></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="record" id="seal">
-  <div class="wrap">
-    <div class="seal-workspace">
-      <div class="drop-card">
-        <h3>Seal a file locally</h3>
-        <p class="hint">Choose a file to generate its SHA-256 fingerprint in your browser. This step creates a downloadable proof record for local verification.</p>
-        <div class="drop-zone-lg" id="sealDropzone" role="button" tabindex="0" aria-label="Choose a file to seal">
-          <span id="sealDropzoneText">Drop a file here, or click to choose</span>
-        </div>
-        <input id="sealFileInput" type="file" hidden>
-      </div>
-
-      <div class="record-card" id="sealRecordCard" data-state="empty">
-        <p class="record-title">Proof record</p>
-        <dl class="record-fields">
-          <dt>File</dt><dd id="sealFieldFile">No file selected</dd>
-          <dt>Fingerprint</dt><dd id="sealFieldFingerprint">-</dd>
-          <dt>Sealed at</dt><dd id="sealFieldSealedAt">-</dd>
-          <dt>Anchor</dt><dd id="sealFieldAnchor">Local preview only</dd>
-          <dt>Status</dt><dd id="sealFieldStatus"><span class="status-pill" data-status="empty"><span class="dot"></span>Waiting for file</span></dd>
-        </dl>
-        <div class="record-actions" id="sealActions" hidden>
-          <button class="btn btn-ghost" id="copyFingerprintBtn" type="button">Copy fingerprint</button>
-          <button class="btn btn-stamp" id="downloadProofBtn" type="button">Download proof</button>
-        </div>
       </div>
     </div>
   </div>

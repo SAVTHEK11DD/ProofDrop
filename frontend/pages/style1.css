@@ -455,6 +455,18 @@
 
   [hidden]{ display:none !important; }
 
+  .seal-workspace{
+    display:grid;
+    grid-template-columns:0.75fr 1.25fr;
+    gap:24px;
+    align-items:stretch;
+  }
+  .record-actions{
+    display:flex;
+    gap:12px;
+    flex-wrap:wrap;
+    margin-top:24px;
+  }
   .drop-zone-lg{
     min-height:142px;
     display:flex;
@@ -497,6 +509,9 @@
     border-radius:50%;
     background:currentColor;
   }
+  .status-pill[data-status="empty"],
+  .status-pill[data-status="hashing"],
+  .status-pill[data-status="pending"]{ color:#8b6a24; }
   .status-pill[data-status="sealed"]{ color:var(--verified); }
   .status-pill[data-status="error"],
   .status-pill[data-status="mismatch"]{ color:var(--stamp); }
@@ -514,3 +529,7 @@
     animation:spin .7s linear infinite;
   }
   @keyframes spin{ to{ transform:rotate(360deg); } }
+
+  @media (max-width:880px){
+    .seal-workspace{ grid-template-columns:1fr; }
+  }

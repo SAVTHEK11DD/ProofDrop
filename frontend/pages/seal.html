@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seal a file - ProofDrop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,680;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style1.css">
+<link rel="icon" type="image/png" href="https://res.cloudinary.com/dknulflaz/image/upload/v1787563526/proofdrop_logo_z8q7fx.png">
+</head>
+<body>
+
+<header class="site">
+  <nav class="wrap">
+    <a href="../index.html" class="brand" style="text-decoration:none;">
+      <svg class="mark" viewBox="0 0 26 26"><circle cx="13" cy="13" r="12" fill="none" stroke="#a8342a" stroke-width="2"/><circle cx="13" cy="13" r="7.5" fill="none" stroke="#a8342a" stroke-width="1" stroke-dasharray="2 2"/></svg>
+      ProofDrop
+    </a>
+    <div class="navlinks">
+      <a href="how-it-works.html">How it works</a>
+      <a href="verify.html">Verify</a>
+      <a href="seal.html" class="btn btn-stamp btn-small active">Seal a file</a>
+    </div>
+  </nav>
+</header>
+
+<section class="page-header">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../index.html">ProofDrop</a> / Seal</div>
+    <h1>Seal a file locally</h1>
+    <p>Choose a file and ProofDrop will generate its SHA-256 fingerprint in your browser. For this v1 step, you can download a local proof record and verify it later.</p>
+  </div>
+</section>
+
+<section class="verify-main">
+  <div class="wrap">
+    <div class="seal-workspace">
+      <div class="drop-card">
+        <h3>1. The file</h3>
+        <p class="hint">The file is read locally to create its fingerprint. It is not uploaded or stored.</p>
+        <div class="drop-zone-lg" id="sealDropzone" role="button" tabindex="0" aria-label="Choose a file to seal">
+          <span id="sealDropzoneText">Drop a file here, or click to choose</span>
+        </div>
+        <input id="sealFileInput" type="file" hidden>
+      </div>
+
+      <div class="record-card" id="sealRecordCard" data-state="empty">
+        <p class="record-title">Proof record</p>
+        <dl class="record-fields">
+          <dt>File</dt><dd id="sealFieldFile">No file selected</dd>
+          <dt>Fingerprint</dt><dd id="sealFieldFingerprint">-</dd>
+          <dt>Sealed at</dt><dd id="sealFieldSealedAt">-</dd>
+          <dt>Anchor</dt><dd id="sealFieldAnchor">Local preview only</dd>
+          <dt>Status</dt><dd id="sealFieldStatus"><span class="status-pill" data-status="empty"><span class="dot"></span>Waiting for file</span></dd>
+        </dl>
+        <div class="record-actions" id="sealActions" hidden>
+          <button class="btn btn-ghost" id="copyFingerprintBtn" type="button">Copy fingerprint</button>
+          <button class="btn btn-stamp" id="downloadProofBtn" type="button">Download proof</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="wrap">
+    <h2>Already have a proof record?</h2>
+    <div class="hero-ctas">
+      <a href="verify.html" class="btn btn-ghost">Verify a proof</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap footer-row">
+    <div class="brand">ProofDrop</div>
+    <div>Fingerprints stay yours. Seals stay portable.</div>
+  </div>
+</footer>
+
+<script src="../app.js"></script>
+</body>
+</html>
