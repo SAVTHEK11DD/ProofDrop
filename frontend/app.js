@@ -1,9 +1,5 @@
-
-
 (function () {
   "use strict";
-
-  /* ---------------- helpers ---------------- */
 
   async function sha256Hex(file) {
     const buffer = await file.arrayBuffer();
@@ -25,7 +21,9 @@
   function randomAnchorId() {
     const bytes = new Uint8Array(8);
     crypto.getRandomValues(bytes);
-    return Array.from(bytes).map((b) => b.toString(16).padStart(2, "0")).join("");
+    return Array.from(bytes)
+      .map((b) => b.toString(16).padStart(2, "0"))
+      .join("");
   }
 
   function wait(ms) {
@@ -48,8 +46,6 @@
     "(prefers-reduced-motion: reduce)"
   ).matches;
 
-  /* ---------------- mobile nav toggle ---------------- */
-
   function initNavToggle() {
     const toggle = document.getElementById("navToggle");
     const links = document.getElementById("navLinks");
@@ -59,6 +55,7 @@
       links.classList.remove("open");
       toggle.setAttribute("aria-expanded", "false");
     }
+
     function open() {
       links.classList.add("open");
       toggle.setAttribute("aria-expanded", "true");
@@ -75,8 +72,6 @@
       if (window.innerWidth > 880) close();
     });
   }
-
-  /* ---------------- dropzone wiring (shared behavior) ---------------- */
 
   function wireDropzone(zone, input, onFile) {
     if (!zone || !input) return;
@@ -95,12 +90,14 @@
         zone.classList.add("dragover");
       })
     );
+
     ["dragleave", "drop"].forEach((evt) =>
       zone.addEventListener(evt, (e) => {
         e.preventDefault();
         zone.classList.remove("dragover");
       })
     );
+
     zone.addEventListener("drop", (e) => {
       const file = e.dataTransfer.files && e.dataTransfer.files[0];
       if (file) onFile(file);
@@ -111,8 +108,6 @@
       if (file) onFile(file);
     });
   }
-
-  /* ---------------- seal flow (index.html) ---------------- */
 
   function initSealFlow() {
     const zone = document.getElementById("sealDropzone");
@@ -130,7 +125,7 @@
     const copyBtn = document.getElementById("copyFingerprintBtn");
     const downloadBtn = document.getElementById("downloadProofBtn");
 
-    let current = null; // holds the sealed record for copy/download
+    let current = null;
 
     function setStatus(status, label) {
       fieldStatus.innerHTML =
@@ -145,31 +140,35 @@
       current = null;
       actions.hidden = true;
       card.dataset.state = "hashing";
-      zoneText.innerHTML = 'Reading <span class="dz-filename">' + escapeHtml(file.name) + "</span>";
+      zoneText.innerHTML =
+        'Reading <span class="dz-filename">' + escapeHtml(file.name) + "</span>";
 
       fieldFile.textContent = file.name;
-      fieldFingerprint.textContent = "—";
-      fieldSealedAt.textContent = "—";
-      fieldAnchor.textContent = "—";
-      setStatus("hashing", "Hashing file locally…");
+      fieldFingerprint.textContent = "-";
+      fieldSealedAt.textContent = "-";
+      fieldAnchor.textContent = "-";
+      setStatus("hashing", "Hashing file locally...");
 
       const hash = await sha256Hex(file);
       await wait(prefersReducedMotion ? 0 : 450);
 
-      setStatus("pending", "Sealing — awaiting anchor confirmation…");
+      setStatus("pending", "Creating local proof record...");
       fieldFingerprint.textContent = hash;
       const sealedAt = isoNow();
       fieldSealedAt.textContent = humanTime(sealedAt);
-      fieldAnchor.textContent = "Anchoring…";
+      fieldAnchor.textContent = "Preparing local preview...";
 
-      await wait(prefersReducedMotion ? 0 : 1200);
+      await wait(prefersReducedMotion ? 0 : 700);
 
       const anchorId = randomAnchorId();
-      const anchorLabel = "OpenTimestamps preview · " + anchorId;
+      const anchorLabel = "Local preview - " + anchorId;
       fieldAnchor.textContent = anchorLabel;
-      setStatus("sealed", "Sealed — verified locally");
+      setStatus("sealed", "Sealed - verified locally");
       card.dataset.state = "sealed";
-      zoneText.innerHTML = 'Sealed <span class="dz-filename">' + escapeHtml(file.name) + "</span> — drop another file to seal it";
+      zoneText.innerHTML =
+        'Sealed <span class="dz-filename">' +
+        escapeHtml(file.name) +
+        "</span> - drop another file to seal it";
       zone.classList.add("has-file");
 
       current = {
@@ -177,17 +176,17 @@
         size: file.size,
         algorithm: "SHA-256",
         fingerprint: hash,
-        sealedAt: sealedAt,
+        sealedAt,
         anchor: anchorLabel,
         status: "sealed",
-        note: "This proof record was sealed in a ProofDrop browser preview. Anchoring is simulated until a real timestamp backend is connected.",
+        note: "This proof record was created in the ProofDrop local browser preview. Blockchain anchoring is not connected yet.",
       };
       actions.hidden = false;
     }
 
     wireDropzone(zone, input, (file) => {
       handleFile(file).catch(() => {
-        setStatus("error", "Something went wrong reading that file — try again.");
+        setStatus("error", "Something went wrong reading that file - try again.");
       });
     });
 
@@ -200,7 +199,7 @@
           copyBtn.textContent = "Copied";
           setTimeout(() => (copyBtn.textContent = original), 1400);
         } catch {
-          /* clipboard blocked — silently ignore, fingerprint is visible on the card */
+          /* Clipboard can be blocked on local files; the fingerprint remains visible. */
         }
       });
     }
@@ -213,8 +212,6 @@
       });
     }
   }
-
-  /* ---------------- verify flow (verify.html) ---------------- */
 
   function initVerifyFlow() {
     const checkBtn = document.getElementById("verifyCheckBtn");
@@ -233,11 +230,12 @@
     const validationMsg = document.getElementById("verifyValidationMsg");
 
     let chosenFile = null;
-    let chosenProof = null; // raw text
+    let chosenProof = null;
 
     wireDropzone(fileZone, fileInput, (file) => {
       chosenFile = file;
-      fileZoneText.innerHTML = 'Selected <span class="dz-filename">' + escapeHtml(file.name) + "</span>";
+      fileZoneText.innerHTML =
+        'Selected <span class="dz-filename">' + escapeHtml(file.name) + "</span>";
       fileZone.classList.add("has-file");
     });
 
@@ -245,7 +243,8 @@
       const reader = new FileReader();
       reader.onload = () => {
         chosenProof = reader.result;
-        proofZoneText.innerHTML = 'Selected <span class="dz-filename">' + escapeHtml(file.name) + "</span>";
+        proofZoneText.innerHTML =
+          'Selected <span class="dz-filename">' + escapeHtml(file.name) + "</span>";
         proofZone.classList.add("has-file");
       };
       reader.readAsText(file);
@@ -255,7 +254,10 @@
       liveResult.hidden = false;
       liveResultCard.className = "result-card" + (mismatch ? " mismatch" : "");
       liveResultCard.innerHTML = html;
-      liveResult.scrollIntoView({ behavior: prefersReducedMotion ? "auto" : "smooth", block: "start" });
+      liveResult.scrollIntoView({
+        behavior: prefersReducedMotion ? "auto" : "smooth",
+        block: "start",
+      });
     }
 
     checkBtn.addEventListener("click", async () => {
@@ -275,8 +277,8 @@
         if (!record.fingerprint) throw new Error("missing fingerprint");
       } catch {
         renderResult(
-          '<p class="result-status"><span class="status-pill" data-status="error"><span class="dot"></span>Couldn\'t read that proof record</span></p>' +
-            '<div class="rline"><span class="rk">REASON</span><span class="rv">File isn\u2019t a valid ProofDrop proof record (JSON with a fingerprint field)</span></div>',
+          '<p class="result-status"><span class="status-pill" data-status="error"><span class="dot"></span>Could not read that proof record</span></p>' +
+            '<div class="rline"><span class="rk">REASON</span><span class="rv">File is not a valid ProofDrop proof record (JSON with a fingerprint field)</span></div>',
           true
         );
         return;
@@ -284,7 +286,8 @@
 
       const originalText = checkBtn.textContent;
       checkBtn.disabled = true;
-      checkBtn.innerHTML = '<span class="spinner" style="color:#ede8da;"></span> Checking…';
+      checkBtn.innerHTML =
+        '<span class="spinner" style="color:#ede8da;"></span> Checking...';
 
       const hash = await sha256Hex(chosenFile);
 
@@ -293,27 +296,41 @@
 
       if (hash === record.fingerprint) {
         renderResult(
-          '<p class="result-status"><span class="status-pill" data-status="sealed"><span class="dot"></span>Verified — file matches seal</span></p>' +
-            '<div class="rline"><span class="rk">FILE</span><span class="rv">' + escapeHtml(record.file || chosenFile.name) + '</span></div>' +
-            '<div class="rline"><span class="rk">FINGERPRINT</span><span class="rv">' + hash + '</span></div>' +
-            '<div class="rline"><span class="rk">SEALED AT</span><span class="rv">' + escapeHtml(record.sealedAt ? humanTime(record.sealedAt) : "—") + '</span></div>' +
-            '<div class="rline"><span class="rk">ANCHOR</span><span class="rv">' + escapeHtml(record.anchor || "—") + '</span></div>',
+          '<p class="result-status"><span class="status-pill" data-status="sealed"><span class="dot"></span>Verified - file matches seal</span></p>' +
+            '<div class="rline"><span class="rk">FILE</span><span class="rv">' +
+            escapeHtml(record.file || chosenFile.name) +
+            '</span></div>' +
+            '<div class="rline"><span class="rk">FINGERPRINT</span><span class="rv">' +
+            hash +
+            '</span></div>' +
+            '<div class="rline"><span class="rk">SEALED AT</span><span class="rv">' +
+            escapeHtml(record.sealedAt ? humanTime(record.sealedAt) : "-") +
+            '</span></div>' +
+            '<div class="rline"><span class="rk">ANCHOR</span><span class="rv">' +
+            escapeHtml(record.anchor || "-") +
+            "</span></div>",
           false
         );
       } else {
         renderResult(
-          '<p class="result-status"><span class="status-pill" data-status="mismatch"><span class="dot"></span>No match — file has changed</span></p>' +
-            '<div class="rline"><span class="rk">FILE</span><span class="rv">' + escapeHtml(chosenFile.name) + '</span></div>' +
-            '<div class="rline"><span class="rk">EXPECTED</span><span class="rv">' + escapeHtml(record.fingerprint) + '</span></div>' +
-            '<div class="rline"><span class="rk">GOT</span><span class="rv">' + hash + '</span></div>' +
-            '<div class="rline"><span class="rk">SEALED AT</span><span class="rv">' + escapeHtml(record.sealedAt ? humanTime(record.sealedAt) : "—") + '</span></div>',
+          '<p class="result-status"><span class="status-pill" data-status="mismatch"><span class="dot"></span>No match - file has changed</span></p>' +
+            '<div class="rline"><span class="rk">FILE</span><span class="rv">' +
+            escapeHtml(chosenFile.name) +
+            '</span></div>' +
+            '<div class="rline"><span class="rk">EXPECTED</span><span class="rv">' +
+            escapeHtml(record.fingerprint) +
+            '</span></div>' +
+            '<div class="rline"><span class="rk">GOT</span><span class="rv">' +
+            hash +
+            '</span></div>' +
+            '<div class="rline"><span class="rk">SEALED AT</span><span class="rv">' +
+            escapeHtml(record.sealedAt ? humanTime(record.sealedAt) : "-") +
+            "</span></div>",
           true
         );
       }
     });
   }
-
-  /* ---------------- scroll reveal ---------------- */
 
   function initReveal() {
     const targets = document.querySelectorAll(
@@ -345,15 +362,11 @@
     });
   }
 
-  /* ---------------- utils ---------------- */
-
   function escapeHtml(str) {
     const div = document.createElement("div");
     div.textContent = str;
     return div.innerHTML;
   }
-
-  /* ---------------- boot ---------------- */
 
   document.addEventListener("DOMContentLoaded", () => {
     initNavToggle();
