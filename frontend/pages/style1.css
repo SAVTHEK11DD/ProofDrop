@@ -452,3 +452,65 @@
     .verify-grid{ grid-template-columns:1fr; }
     .result-grid{ grid-template-columns:1fr; }
   }
+
+  [hidden]{ display:none !important; }
+
+  .drop-zone-lg{
+    min-height:142px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .drop-zone-lg:hover,
+  .drop-zone-lg:focus-visible,
+  .drop-zone-lg.dragover{
+    border-color:var(--stamp-hi);
+    color:var(--paper);
+    background:rgba(168,52,42,0.08);
+    outline:none;
+  }
+  .drop-zone-lg.has-file{
+    border-color:rgba(60,122,91,0.8);
+    color:var(--paper);
+    background:rgba(60,122,91,0.1);
+  }
+  .dz-filename{
+    color:var(--paper);
+    font-weight:500;
+    word-break:break-all;
+  }
+  .validation-msg{
+    margin:14px 0 0;
+    color:var(--stamp-hi);
+    font-family:var(--mono);
+    font-size:0.82rem;
+  }
+  .status-pill{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-weight:600;
+  }
+  .status-pill .dot{
+    width:8px;
+    height:8px;
+    border-radius:50%;
+    background:currentColor;
+  }
+  .status-pill[data-status="sealed"]{ color:var(--verified); }
+  .status-pill[data-status="error"],
+  .status-pill[data-status="mismatch"]{ color:var(--stamp); }
+  .btn:disabled{
+    cursor:wait;
+    opacity:0.7;
+    transform:none;
+  }
+  .spinner{
+    width:14px;
+    height:14px;
+    border:2px solid currentColor;
+    border-right-color:transparent;
+    border-radius:50%;
+    animation:spin .7s linear infinite;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }

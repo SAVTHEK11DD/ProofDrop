@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Verify a proof — ProofDrop</title>
+<title>Verify a proof - ProofDrop</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,680;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -21,7 +21,7 @@
     <div class="navlinks">
       <a href="how-it-works.html">How it works</a>
       <a href="verify.html" class="active">Verify</a>
-      <a href="#" class="btn btn-stamp btn-small">Seal a file</a>
+      <a href="../index.html#seal" class="btn btn-stamp btn-small">Seal a file</a>
     </div>
   </nav>
 </header>
@@ -30,7 +30,7 @@
   <div class="wrap">
     <div class="breadcrumb"><a href="../index.html">ProofDrop</a> / Verify</div>
     <h1>Verify a proof record</h1>
-    <p>Everything here runs in your browser. Neither file ever gets sent to ProofDrop — the check happens locally, against the public anchor.</p>
+    <p>Everything here runs in your browser. Choose the original file and the proof record you downloaded when you sealed it.</p>
   </div>
 </section>
 
@@ -39,41 +39,58 @@
     <div class="verify-grid">
       <div class="drop-card">
         <h3>1. The original file</h3>
-        <p class="hint">The exact file you want to check — same bytes as when it was sealed.</p>
-        <div class="drop-zone-lg">Drop the file here, or click to choose</div>
+        <p class="hint">The exact file you want to check, with the same bytes as when it was sealed.</p>
+        <div class="drop-zone-lg" id="verifyFileDropzone" role="button" tabindex="0" aria-label="Choose the original file">
+          <span id="verifyFileDropzoneText">Drop the file here, or click to choose</span>
+        </div>
+        <input id="verifyFileInput" type="file" hidden>
       </div>
       <div class="drop-card">
         <h3>2. The proof record</h3>
-        <p class="hint">The small record ProofDrop gave you when the file was sealed.</p>
-        <div class="drop-zone-lg">Drop the proof record here, or click to choose</div>
+        <p class="hint">The .proofdrop.json file created by the local sealing step.</p>
+        <div class="drop-zone-lg" id="verifyProofDropzone" role="button" tabindex="0" aria-label="Choose the proof record">
+          <span id="verifyProofDropzoneText">Drop the proof record here, or click to choose</span>
+        </div>
+        <input id="verifyProofInput" type="file" accept="application/json,.json" hidden>
       </div>
     </div>
 
     <div class="verify-action">
-      <a href="#" class="btn btn-stamp">Check now</a>
+      <button class="btn btn-stamp" id="verifyCheckBtn" type="button">Check now</button>
+      <p class="validation-msg" id="verifyValidationMsg" hidden></p>
+    </div>
+
+    <div class="result-examples" id="liveResult" hidden>
+      <div class="section-head">
+        <div class="eyebrow"><span class="dot"></span> RESULT</div>
+        <h2>Verification result</h2>
+        <p>ProofDrop recomputed the SHA-256 hash locally and compared it with the proof record.</p>
+      </div>
+
+      <div class="result-card" id="liveResultCard"></div>
     </div>
 
     <div class="result-examples">
       <div class="section-head">
-        <div class="eyebrow"><span class="dot"></span> WHAT YOU'LL SEE</div>
+        <div class="eyebrow"><span class="dot"></span> WHAT YOU WILL SEE</div>
         <h2>Two possible outcomes</h2>
-        <p>ProofDrop doesn't soften a mismatch — if the fingerprints don't line up, it says so plainly and shows both values so you can see exactly where they diverge.</p>
+        <p>If the fingerprints line up, the file matches. If they do not, the file has changed or the proof belongs to a different file.</p>
       </div>
 
       <div class="result-grid">
         <div class="result-card">
-          <p class="result-status"><span class="dot"></span>Verified — file matches seal</p>
+          <p class="result-status"><span class="dot"></span>Verified - file matches seal</p>
           <div class="rline"><span class="rk">FILE</span><span class="rv">contract_final.pdf</span></div>
-          <div class="rline"><span class="rk">FINGERPRINT</span><span class="rv">9f2c4d1a…e88c</span></div>
+          <div class="rline"><span class="rk">FINGERPRINT</span><span class="rv">9f2c4d1a...e88c</span></div>
           <div class="rline"><span class="rk">SEALED AT</span><span class="rv">2026-08-24 09:14 UTC</span></div>
-          <div class="rline"><span class="rk">ANCHOR</span><span class="rv">Confirmed</span></div>
+          <div class="rline"><span class="rk">ANCHOR</span><span class="rv">Local preview</span></div>
         </div>
 
         <div class="result-card mismatch">
-          <p class="result-status"><span class="dot"></span>No match — file has changed</p>
+          <p class="result-status"><span class="dot"></span>No match - file has changed</p>
           <div class="rline"><span class="rk">FILE</span><span class="rv">contract_final_v2.pdf</span></div>
-          <div class="rline"><span class="rk">EXPECTED</span><span class="rv">9f2c4d1a…e88c</span></div>
-          <div class="rline"><span class="rk">GOT</span><span class="rv">3b71ea90…f102</span></div>
+          <div class="rline"><span class="rk">EXPECTED</span><span class="rv">9f2c4d1a...e88c</span></div>
+          <div class="rline"><span class="rk">GOT</span><span class="rv">3b71ea90...f102</span></div>
           <div class="rline"><span class="rk">SEALED AT</span><span class="rv">2026-08-24 09:14 UTC</span></div>
         </div>
       </div>
@@ -84,9 +101,10 @@
 <footer class="site">
   <div class="wrap footer-row">
     <div class="brand">ProofDrop</div>
-    <div>Fingerprints stay yours. Seals stay public.</div>
+    <div>Fingerprints stay yours. Seals stay portable.</div>
   </div>
 </footer>
 
+<script src="../app.js"></script>
 </body>
 </html>

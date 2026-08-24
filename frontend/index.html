@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ProofDrop — Seal a file. Prove a moment.</title>
+<title>ProofDrop - Seal a file. Prove a moment.</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,680;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -21,7 +21,7 @@
     <div class="navlinks">
       <a href="pages/how-it-works.html">How it works</a>
       <a href="pages/verify.html">Verify</a>
-      <a href="#" class="btn btn-stamp btn-small">Seal a file</a>
+      <a href="#seal" class="btn btn-stamp btn-small">Seal a file</a>
     </div>
   </nav>
 </header>
@@ -29,12 +29,12 @@
 <section class="hero">
   <div class="wrap hero-grid">
     <div>
-      <div class="eyebrow"><span class="dot"></span> INDEPENDENTLY VERIFIABLE · NO ACCOUNT NEEDED TO CHECK</div>
+      <div class="eyebrow"><span class="dot"></span> INDEPENDENTLY VERIFIABLE - LOCAL HASHING FIRST</div>
       <h1 class="hero-head">Prove a file existed.<br>Prove it hasn't <em>changed</em>.</h1>
-      <p class="hero-sub">Drop a file and ProofDrop seals its fingerprint to a public, tamper-evident timestamp. Anyone can check it later — without asking us for permission, and without ever seeing your file.</p>
+      <p class="hero-sub">Drop a file and ProofDrop creates its fingerprint in your browser. For this v1 step, you can download a local proof record and verify it later without uploading the file.</p>
       <div class="hero-ctas">
-        <a href="#" class="btn btn-stamp">Seal a file</a>
-        <a href="#verify" class="btn btn-ghost">Verify a proof</a>
+        <a href="#seal" class="btn btn-stamp">Seal a file</a>
+        <a href="pages/verify.html" class="btn btn-ghost">Verify a proof</a>
       </div>
       <div class="hero-note">Your file is hashed in your browser. It never leaves your device.</div>
     </div>
@@ -49,7 +49,7 @@
         <circle cx="120" cy="120" r="86" fill="none" stroke="#a8342a" stroke-width="1" stroke-dasharray="3 5" opacity="0.7"/>
         <text fill="#ede8da" font-family="IBM Plex Mono, monospace" font-size="9.5" letter-spacing="2.2">
           <textPath href="#ringPath" startOffset="0%">
-            9F2C4D1A7B03E88C · SEALED · 2026-08-24T09:14Z · 9F2C4D1A7B03E88C · SEALED ·
+            9F2C4D1A7B03E88C - SEALED - 2026-08-24T09:14Z - 9F2C4D1A7B03E88C - SEALED -
           </textPath>
         </text>
         <circle cx="120" cy="120" r="58" fill="#12141c" stroke="#a8342a" stroke-width="2"/>
@@ -58,24 +58,39 @@
 
       <div class="record-peek">
         <div class="rline"><span class="rk">FILE</span><span class="rv">contract_final.pdf</span></div>
-        <div class="rline"><span class="rk">FINGERPRINT</span><span class="rv">9f2c4d1a…e88c</span></div>
+        <div class="rline"><span class="rk">FINGERPRINT</span><span class="rv">9f2c4d1a...e88c</span></div>
         <div class="rline"><span class="rk">SEALED AT</span><span class="rv">2026-08-24 09:14 UTC</span></div>
       </div>
     </div>
   </div>
 </section>
 
-<section class="record">
+<section class="record" id="seal">
   <div class="wrap">
-    <div class="record-card">
-      <p class="record-title">Proof record</p>
-      <dl class="record-fields">
-        <dt>File</dt><dd>contract_final.pdf</dd>
-        <dt>Fingerprint</dt><dd>9f2c4d1a7b03e88c4a1d5f0e2c9b7a6d1e3f8c0a4b5d6e7f8091a2b3c4d5e6f7</dd>
-        <dt>Sealed at</dt><dd>2026-08-24 09:14:02 UTC</dd>
-        <dt>Anchor</dt><dd>Public Bitcoin timestamp (OpenTimestamps) · block pending</dd>
-        <dt>Status</dt><dd><span class="status-verified"><span class="dot"></span>Verified — file matches seal</span></dd>
-      </dl>
+    <div class="seal-workspace">
+      <div class="drop-card">
+        <h3>Seal a file locally</h3>
+        <p class="hint">Choose a file to generate its SHA-256 fingerprint in your browser. This step creates a downloadable proof record for local verification.</p>
+        <div class="drop-zone-lg" id="sealDropzone" role="button" tabindex="0" aria-label="Choose a file to seal">
+          <span id="sealDropzoneText">Drop a file here, or click to choose</span>
+        </div>
+        <input id="sealFileInput" type="file" hidden>
+      </div>
+
+      <div class="record-card" id="sealRecordCard" data-state="empty">
+        <p class="record-title">Proof record</p>
+        <dl class="record-fields">
+          <dt>File</dt><dd id="sealFieldFile">No file selected</dd>
+          <dt>Fingerprint</dt><dd id="sealFieldFingerprint">-</dd>
+          <dt>Sealed at</dt><dd id="sealFieldSealedAt">-</dd>
+          <dt>Anchor</dt><dd id="sealFieldAnchor">Local preview only</dd>
+          <dt>Status</dt><dd id="sealFieldStatus"><span class="status-pill" data-status="empty"><span class="dot"></span>Waiting for file</span></dd>
+        </dl>
+        <div class="record-actions" id="sealActions" hidden>
+          <button class="btn btn-ghost" id="copyFingerprintBtn" type="button">Copy fingerprint</button>
+          <button class="btn btn-stamp" id="downloadProofBtn" type="button">Download proof</button>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -84,8 +99,8 @@
   <div class="wrap">
     <div class="section-head">
       <div class="eyebrow"><span class="dot"></span> THE PROCESS</div>
-      <h2>Three steps, in order — because each one depends on the last.</h2>
-      <p>Sealing is sequential: you can't timestamp a fingerprint before it exists, and you can't verify a seal before it's anchored.</p>
+      <h2>Three steps, in order, because each one depends on the last.</h2>
+      <p>For this local v1 pass, sealing means hashing the file and saving a portable proof record. The blockchain step comes next.</p>
     </div>
     <div class="tags">
       <div class="tag">
@@ -94,14 +109,14 @@
         <p>Your file is fingerprinted right in the browser using a one-way hash. The file itself is never uploaded or stored anywhere.</p>
       </div>
       <div class="tag">
-        <span class="tag-num">STEP 02 / SEAL</span>
-        <h3>Seal the fingerprint</h3>
-        <p>The fingerprint is timestamped against a public, append-only anchor — not a database only ProofDrop controls.</p>
+        <span class="tag-num">STEP 02 / SAVE</span>
+        <h3>Download the proof</h3>
+        <p>The generated proof record stores the filename, size, hash, timestamp, and local preview anchor.</p>
       </div>
       <div class="tag">
         <span class="tag-num">STEP 03 / VERIFY</span>
         <h3>Verify, anytime</h3>
-        <p>Anyone with the file and the proof record can confirm both the match and the moment — offline, and without trusting us.</p>
+        <p>Anyone with the file and proof record can recompute the fingerprint locally and confirm whether the bytes still match.</p>
       </div>
     </div>
   </div>
@@ -112,29 +127,28 @@
     <div>
       <div class="section-head">
         <div class="eyebrow"><span class="dot"></span> WHY IT HOLDS UP</div>
-        <h2>Verification that doesn't need us</h2>
+        <h2>Verification that starts with the file itself</h2>
       </div>
       <ul class="trust-list">
         <li>
           <span class="num">01</span>
-          <div><h4>The file never leaves your device</h4><p>Hashing happens locally, so there's nothing sensitive for anyone to intercept or store.</p></div>
+          <div><h4>The file never leaves your device</h4><p>Hashing happens locally, so there is nothing sensitive for anyone to intercept or store.</p></div>
         </li>
         <li>
           <span class="num">02</span>
-          <div><h4>The anchor is public</h4><p>The seal is checked against an anchor anyone can audit independently — not a ProofDrop database.</p></div>
+          <div><h4>The fingerprint is deterministic</h4><p>The same file produces the same SHA-256 hash. Change one byte and the fingerprint changes.</p></div>
         </li>
         <li>
           <span class="num">03</span>
-          <div><h4>The proof record is portable</h4><p>Download it, print it, hand it to a court or a client. It verifies with or without ProofDrop online.</p></div>
+          <div><h4>The proof record is portable</h4><p>Download it and store it next to the original. The verify page can check it without a server.</p></div>
         </li>
       </ul>
     </div>
 
     <div class="verify-panel">
       <h3>Check a proof</h3>
-      <p>Drop the original file and its proof record. ProofDrop recomputes the fingerprint locally and checks it against the sealed anchor.</p>
-      <div class="drop-zone">Drop file + proof record, or click to choose</div>
-      <a href="#" class="btn btn-ghost" style="width:100%;justify-content:center;">Check now</a>
+      <p>Open the verifier, choose the original file and the downloaded proof record, then ProofDrop recomputes the fingerprint locally.</p>
+      <a href="pages/verify.html" class="btn btn-ghost" style="width:100%;justify-content:center;">Open verifier</a>
     </div>
   </div>
 </section>
@@ -142,9 +156,10 @@
 <footer class="site">
   <div class="wrap footer-row">
     <div class="brand">ProofDrop</div>
-    <div>Fingerprints stay yours. Seals stay public.</div>
+    <div>Fingerprints stay yours. Seals stay portable.</div>
   </div>
 </footer>
 
+<script src="app.js"></script>
 </body>
 </html>
