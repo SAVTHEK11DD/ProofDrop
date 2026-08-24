@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Verify a proof — ProofDrop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,680;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style1.css">
+<link rel="icon" type="image/png" href="https://res.cloudinary.com/dknulflaz/image/upload/v1787563526/proofdrop_logo_z8q7fx.png">
+</head>
+<body>
+
+<header class="site">
+  <nav class="wrap">
+    <a href="../index.html" class="brand" style="text-decoration:none;">
+      <svg class="mark" viewBox="0 0 26 26"><circle cx="13" cy="13" r="12" fill="none" stroke="#a8342a" stroke-width="2"/><circle cx="13" cy="13" r="7.5" fill="none" stroke="#a8342a" stroke-width="1" stroke-dasharray="2 2"/></svg>
+      ProofDrop
+    </a>
+    <div class="navlinks">
+      <a href="how-it-works.html">How it works</a>
+      <a href="verify.html" class="active">Verify</a>
+      <a href="#" class="btn btn-stamp btn-small">Seal a file</a>
+    </div>
+  </nav>
+</header>
+
+<section class="page-header">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../index.html">ProofDrop</a> / Verify</div>
+    <h1>Verify a proof record</h1>
+    <p>Everything here runs in your browser. Neither file ever gets sent to ProofDrop — the check happens locally, against the public anchor.</p>
+  </div>
+</section>
+
+<section class="verify-main">
+  <div class="wrap">
+    <div class="verify-grid">
+      <div class="drop-card">
+        <h3>1. The original file</h3>
+        <p class="hint">The exact file you want to check — same bytes as when it was sealed.</p>
+        <div class="drop-zone-lg">Drop the file here, or click to choose</div>
+      </div>
+      <div class="drop-card">
+        <h3>2. The proof record</h3>
+        <p class="hint">The small record ProofDrop gave you when the file was sealed.</p>
+        <div class="drop-zone-lg">Drop the proof record here, or click to choose</div>
+      </div>
+    </div>
+
+    <div class="verify-action">
+      <a href="#" class="btn btn-stamp">Check now</a>
+    </div>
+
+    <div class="result-examples">
+      <div class="section-head">
+        <div class="eyebrow"><span class="dot"></span> WHAT YOU'LL SEE</div>
+        <h2>Two possible outcomes</h2>
+        <p>ProofDrop doesn't soften a mismatch — if the fingerprints don't line up, it says so plainly and shows both values so you can see exactly where they diverge.</p>
+      </div>
+
+      <div class="result-grid">
+        <div class="result-card">
+          <p class="result-status"><span class="dot"></span>Verified — file matches seal</p>
+          <div class="rline"><span class="rk">FILE</span><span class="rv">contract_final.pdf</span></div>
+          <div class="rline"><span class="rk">FINGERPRINT</span><span class="rv">9f2c4d1a…e88c</span></div>
+          <div class="rline"><span class="rk">SEALED AT</span><span class="rv">2026-08-24 09:14 UTC</span></div>
+          <div class="rline"><span class="rk">ANCHOR</span><span class="rv">Confirmed</span></div>
+        </div>
+
+        <div class="result-card mismatch">
+          <p class="result-status"><span class="dot"></span>No match — file has changed</p>
+          <div class="rline"><span class="rk">FILE</span><span class="rv">contract_final_v2.pdf</span></div>
+          <div class="rline"><span class="rk">EXPECTED</span><span class="rv">9f2c4d1a…e88c</span></div>
+          <div class="rline"><span class="rk">GOT</span><span class="rv">3b71ea90…f102</span></div>
+          <div class="rline"><span class="rk">SEALED AT</span><span class="rv">2026-08-24 09:14 UTC</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap footer-row">
+    <div class="brand">ProofDrop</div>
+    <div>Fingerprints stay yours. Seals stay public.</div>
+  </div>
+</footer>
+
+</body>
+</html>

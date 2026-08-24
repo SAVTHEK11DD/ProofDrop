@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How it works — ProofDrop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,680;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style1.css">
+<link rel="icon" type="image/png" href="https://res.cloudinary.com/dknulflaz/image/upload/v1787563526/proofdrop_logo_z8q7fx.png">
+</head>
+<body>
+
+<header class="site">
+  <nav class="wrap">
+    <a href="../index.html" class="brand" style="text-decoration:none;">
+      <svg class="mark" viewBox="0 0 26 26"><circle cx="13" cy="13" r="12" fill="none" stroke="#a8342a" stroke-width="2"/><circle cx="13" cy="13" r="7.5" fill="none" stroke="#a8342a" stroke-width="1" stroke-dasharray="2 2"/></svg>
+      ProofDrop
+    </a>
+    <div class="navlinks">
+      <a href="how-it-works.html">How it works</a>
+      <a href="verify.html">Verify</a>
+      <a href="#" class="btn btn-stamp btn-small">Seal a file</a>
+    </div>
+  </nav>
+</header>
+
+<section class="page-header">
+  <div class="wrap">
+    <div class="breadcrumb"><a href="../index.html">ProofDrop</a> / How it works</div>
+    <h1>What "sealed" actually means</h1>
+    <p>No account, no cloud storage, no trusting ProofDrop's word for it. Here's what happens at each step, and why it holds up.</p>
+  </div>
+</section>
+
+<section class="detail">
+  <div class="wrap">
+
+    <div class="detail-row">
+      <div class="detail-label">STEP 01 / DROP</div>
+      <div class="detail-body">
+        <h3>The file is fingerprinted, not uploaded</h3>
+        <p>When you drop a file into ProofDrop, it's hashed right there in your browser using SHA-256 — a one-way function that turns any file into a fixed, unique string of characters. Change a single pixel or comma in the file and the fingerprint comes out completely different.</p>
+        <ul>
+          <li>The file itself never leaves your device — only the fingerprint is sent onward.</li>
+          <li>There's nothing for ProofDrop to store, leak, or be subpoenaed for, because we never had the file.</li>
+          <li>You can re-run the hash yourself with any standard tool and confirm it matches.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="detail-row">
+      <div class="detail-label">STEP 02 / SEAL</div>
+      <div class="detail-body">
+        <h3>The fingerprint is timestamped in public</h3>
+        <p>The fingerprint is submitted to a public, append-only anchor — not a private ProofDrop database. That's the part that makes the proof independent: the record of "this fingerprint existed at this time" lives somewhere no single party, including us, can quietly edit.</p>
+        <ul>
+          <li>Anchors are things like public timestamp authorities or transparency logs, chosen for how hard they are to rewrite after the fact.</li>
+          <li>Sealing can take a little time to fully confirm — you'll see a proof move from "pending" to "sealed" as the anchor finalizes it.</li>
+          <li>Once sealed, the timestamp is fixed. Backdating or altering it would require rewriting the public anchor itself.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="detail-row">
+      <div class="detail-label">STEP 03 / VERIFY</div>
+      <div class="detail-body">
+        <h3>Anyone can check it, without asking us</h3>
+        <p>Verification takes the original file and its proof record, recomputes the fingerprint locally, and checks that fingerprint against the public anchor. If both match, the file provably existed in that exact form at that exact time.</p>
+        <ul>
+          <li>Verification doesn't require a ProofDrop account, and doesn't require ProofDrop to be online.</li>
+          <li>A proof record is a small, portable file — attach it to an email, hand it to a court, store it next to the original.</li>
+          <li>If even one byte of the file has changed since sealing, the fingerprints won't match and verification will say so plainly.</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section class="cta-band">
+  <div class="wrap">
+    <h2>Ready to seal your first file?</h2>
+    <div class="hero-ctas">
+      <a href="#" class="btn btn-stamp">Seal a file</a>
+      <a href="verify.html" class="btn btn-ghost">Verify a proof</a>
+    </div>
+  </div>
+</section>
+
+<footer class="site">
+  <div class="wrap footer-row">
+    <div class="brand">ProofDrop</div>
+    <div>Fingerprints stay yours. Seals stay public.</div>
+  </div>
+</footer>
+
+</body>
+</html>
