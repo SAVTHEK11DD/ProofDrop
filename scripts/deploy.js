@@ -1,7 +1,12 @@
 const hre = require("hardhat");
 
 async function main() {
-  console.log("Hardhat is ready. Add the ProofDrop contract before deploying.");
+  const ProofDrop = await hre.ethers.getContractFactory("ProofDrop");
+  const proofDrop = await ProofDrop.deploy();
+
+  await proofDrop.waitForDeployment();
+
+  console.log("ProofDrop deployed to:", await proofDrop.getAddress());
   console.log("Network:", hre.network.name);
 }
 
