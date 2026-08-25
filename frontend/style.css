@@ -413,3 +413,23 @@
   @media (max-width:880px){
     .seal-workspace{ grid-template-columns:1fr; }
   }
+
+  @media (max-width:600px){
+    .wrap{ padding-left:20px; padding-right:20px; }
+    nav.wrap{
+      height:auto;
+      min-height:76px;
+      padding-top:14px;
+      padding-bottom:14px;
+      flex-wrap:wrap;
+      gap:12px;
+    }
+    .navlinks{
+      width:100%;
+      justify-content:flex-end;
+      gap:18px;
+      font-size:0.8rem;
+    }
+    .navlinks a{ white-space:nowrap; }
+    .hero{ padding-top:56px; }
+  }
