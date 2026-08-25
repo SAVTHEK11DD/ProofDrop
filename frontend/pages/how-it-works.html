@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>How it works — ProofDrop</title>
+<title>How it works - ProofDrop</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,680;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -19,7 +19,7 @@
       ProofDrop
     </a>
     <div class="navlinks">
-      <a href="how-it-works.html">How it works</a>
+      <a href="how-it-works.html" class="active">How it works</a>
       <a href="verify.html">Verify</a>
       <a href="seal.html" class="btn btn-stamp btn-small">Seal a file</a>
     </div>
@@ -29,8 +29,8 @@
 <section class="page-header">
   <div class="wrap">
     <div class="breadcrumb"><a href="../index.html">ProofDrop</a> / How it works</div>
-    <h1>What "sealed" actually means</h1>
-    <p>No account, no cloud storage, no trusting ProofDrop's word for it. Here's what happens at each step, and why it holds up.</p>
+    <h1>What "sealed" means in v1</h1>
+    <p>ProofDrop starts by proving file integrity locally: hash the file, save a portable proof record, and verify the same bytes later. The blockchain anchor is the next layer.</p>
   </div>
 </section>
 
@@ -41,24 +41,24 @@
       <div class="detail-label">STEP 01 / DROP</div>
       <div class="detail-body">
         <h3>The file is fingerprinted, not uploaded</h3>
-        <p>When you drop a file into ProofDrop, it's hashed right there in your browser using SHA-256 — a one-way function that turns any file into a fixed, unique string of characters. Change a single pixel or comma in the file and the fingerprint comes out completely different.</p>
+        <p>When you drop a file into ProofDrop, it is hashed right in your browser using SHA-256. That one-way function turns the file into a fixed fingerprint. Change a single byte and the fingerprint changes.</p>
         <ul>
-          <li>The file itself never leaves your device — only the fingerprint is sent onward.</li>
-          <li>There's nothing for ProofDrop to store, leak, or be subpoenaed for, because we never had the file.</li>
-          <li>You can re-run the hash yourself with any standard tool and confirm it matches.</li>
+          <li>The file itself never leaves your device.</li>
+          <li>ProofDrop does not need to store the original file.</li>
+          <li>You can re-run the hash later and confirm it matches.</li>
         </ul>
       </div>
     </div>
 
     <div class="detail-row">
-      <div class="detail-label">STEP 02 / SEAL</div>
+      <div class="detail-label">STEP 02 / SAVE</div>
       <div class="detail-body">
-        <h3>The fingerprint is timestamped in public</h3>
-        <p>The fingerprint is submitted to a public, append-only anchor — not a private ProofDrop database. That's the part that makes the proof independent: the record of "this fingerprint existed at this time" lives somewhere no single party, including us, can quietly edit.</p>
+        <h3>The local proof record is created</h3>
+        <p>The seal page saves the filename, size, SHA-256 fingerprint, and timestamp into a small JSON proof record. For now, this is a local preview of the full blockchain flow.</p>
         <ul>
-          <li>Anchors are things like public timestamp authorities or transparency logs, chosen for how hard they are to rewrite after the fact.</li>
-          <li>Sealing can take a little time to fully confirm — you'll see a proof move from "pending" to "sealed" as the anchor finalizes it.</li>
-          <li>Once sealed, the timestamp is fixed. Backdating or altering it would require rewriting the public anchor itself.</li>
+          <li>The downloaded proof record is portable.</li>
+          <li>It does not contain the actual file.</li>
+          <li>The next v1 milestone is recording the fingerprint on Sepolia through MetaMask.</li>
         </ul>
       </div>
     </div>
@@ -66,12 +66,12 @@
     <div class="detail-row">
       <div class="detail-label">STEP 03 / VERIFY</div>
       <div class="detail-body">
-        <h3>Anyone can check it, without asking us</h3>
-        <p>Verification takes the original file and its proof record, recomputes the fingerprint locally, and checks that fingerprint against the public anchor. If both match, the file provably existed in that exact form at that exact time.</p>
+        <h3>Anyone can check whether the file still matches</h3>
+        <p>Verification takes the original file and the proof record, recomputes the file fingerprint locally, and compares the two hashes. If they match, the file bytes are unchanged from the proof record.</p>
         <ul>
-          <li>Verification doesn't require a ProofDrop account, and doesn't require ProofDrop to be online.</li>
-          <li>A proof record is a small, portable file — attach it to an email, hand it to a court, store it next to the original.</li>
-          <li>If even one byte of the file has changed since sealing, the fingerprints won't match and verification will say so plainly.</li>
+          <li>Verification does not require an account.</li>
+          <li>If one byte changed, the fingerprints will not match.</li>
+          <li>Once the blockchain layer is added, this same check will compare against the on-chain hash.</li>
         </ul>
       </div>
     </div>
@@ -92,7 +92,7 @@
 <footer class="site">
   <div class="wrap footer-row">
     <div class="brand">ProofDrop</div>
-    <div>Fingerprints stay yours. Seals stay public.</div>
+    <div>Fingerprints stay yours. Seals stay portable.</div>
   </div>
 </footer>
 
