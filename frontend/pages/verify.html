@@ -36,6 +36,14 @@
 
 <section class="verify-main">
   <div class="wrap">
+    <div class="wallet-strip">
+      <div>
+        <h3>Wallet</h3>
+        <p class="hint" id="walletStatus">Connect MetaMask if you want to check the file hash on Sepolia.</p>
+      </div>
+      <button class="btn btn-ghost" id="connectWalletBtn" type="button">Connect wallet</button>
+    </div>
+
     <div class="verify-grid">
       <div class="drop-card">
         <h3>1. The original file</h3>
@@ -57,6 +65,7 @@
 
     <div class="verify-action">
       <button class="btn btn-stamp" id="verifyCheckBtn" type="button">Check now</button>
+      <button class="btn btn-ghost" id="verifyOnChainBtn" type="button">Check on Sepolia</button>
       <p class="validation-msg" id="verifyValidationMsg" hidden></p>
     </div>
 
@@ -105,6 +114,8 @@
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
+<script src="../contract-config.js"></script>
 <script src="../app.js"></script>
 </body>
 </html>

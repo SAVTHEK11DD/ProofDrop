@@ -45,6 +45,132 @@
   const prefersReducedMotion = window.matchMedia(
     "(prefers-reduced-motion: reduce)"
   ).matches;
+  const config = window.ProofDropConfig || {};
+  const SEPOLIA_CHAIN_ID = config.sepoliaChainId || "0xaa36a7";
+
+  let walletProvider = null;
+  let walletSigner = null;
+  let walletAddress = "";
+
+  function shortAddress(address) {
+    return address.slice(0, 6) + "..." + address.slice(-4);
+  }
+
+  function fileHashToBytes32(hash) {
+    return hash.startsWith("0x") ? hash : "0x" + hash;
+  }
+
+  function getContractAddress() {
+    return config.contractAddress || "";
+  }
+
+  function getEthers() {
+    return window.ethers;
+  }
+
+  function setWalletStatus(message, kind) {
+    document.querySelectorAll("#walletStatus").forEach((el) => {
+      el.textContent = message;
+      el.dataset.status = kind || "info";
+    });
+  }
+
+  function setButtonBusy(button, label) {
+    const original = button.textContent;
+    button.disabled = true;
+    button.innerHTML =
+      '<span class="spinner" style="color:currentColor;"></span> ' + label;
+    return () => {
+      button.disabled = false;
+      button.textContent = original;
+    };
+  }
+
+  async function ensureSepolia() {
+    if (!window.ethereum) {
+      throw new Error("MetaMask is not installed.");
+    }
+
+    const chainId = await window.ethereum.request({ method: "eth_chainId" });
+    if (chainId === SEPOLIA_CHAIN_ID) return;
+
+    await window.ethereum.request({
+      method: "wallet_switchEthereumChain",
+      params: [{ chainId: SEPOLIA_CHAIN_ID }],
+    });
+  }
+
+  async function connectWallet() {
+    const ethers = getEthers();
+    if (!window.ethereum || !ethers) {
+      throw new Error("MetaMask and ethers.js are required.");
+    }
+
+    await ensureSepolia();
+    walletProvider = new ethers.BrowserProvider(window.ethereum);
+    walletSigner = await walletProvider.getSigner();
+    walletAddress = await walletSigner.getAddress();
+    setWalletStatus(
+      "Connected to Sepolia as " + shortAddress(walletAddress),
+      "success"
+    );
+    return walletSigner;
+  }
+
+  async function getWritableContract() {
+    if (!getContractAddress()) {
+      throw new Error("Contract address is not configured yet.");
+    }
+    if (!walletSigner) {
+      await connectWallet();
+    }
+    return new window.ethers.Contract(
+      getContractAddress(),
+      config.abi,
+      walletSigner
+    );
+  }
+
+  async function getReadableContract() {
+    if (!getContractAddress()) {
+      throw new Error("Contract address is not configured yet.");
+    }
+    if (!walletProvider) {
+      await connectWallet();
+    }
+    return new window.ethers.Contract(
+      getContractAddress(),
+      config.abi,
+      walletProvider
+    );
+  }
+
+  function initWalletControls() {
+    const buttons = document.querySelectorAll("#connectWalletBtn");
+    if (!buttons.length) return;
+
+    if (!window.ethereum) {
+      setWalletStatus("MetaMask was not detected in this browser.", "error");
+    } else if (!getContractAddress()) {
+      setWalletStatus(
+        "MetaMask ready. Contract address will be added after deployment.",
+        "info"
+      );
+    }
+
+    buttons.forEach((button) => {
+      button.addEventListener("click", async () => {
+        const restore = setButtonBusy(button, "Connecting...");
+        try {
+          await connectWallet();
+        } catch (error) {
+          setWalletStatus(error.message, "error");
+        } finally {
+          restore();
+        }
+      });
+    });
+  }
 
   function initNavToggle() {
     const toggle = document.getElementById("navToggle");
@@ -124,6 +250,7 @@
     const actions = document.getElementById("sealActions");
     const copyBtn = document.getElementById("copyFingerprintBtn");
     const downloadBtn = document.getElementById("downloadProofBtn");
+    const sealOnChainBtn = document.getElementById("sealOnChainBtn");
 
     let current = null;
 
@@ -211,6 +338,31 @@
         download(name, JSON.stringify(current, null, 2));
       });
     }
+
+    if (sealOnChainBtn) {
+      sealOnChainBtn.addEventListener("click", async () => {
+        if (!current) return;
+        const restore = setButtonBusy(sealOnChainBtn, "Sealing...");
+        try {
+          const contract = await getWritableContract();
+          const tx = await contract.sealFile(fileHashToBytes32(current.fingerprint));
+          setStatus("pending", "Waiting for Sepolia confirmation...");
+          fieldAnchor.textContent = tx.hash;
+          const receipt = await tx.wait();
+
+          current.anchor = "Sepolia transaction - " + receipt.hash;
+          current.transactionHash = receipt.hash;
+          current.chain = "sepolia";
+          current.contractAddress = getContractAddress();
+          fieldAnchor.textContent = current.anchor;
+          setStatus("sealed", "Sealed on Sepolia");
+        } catch (error) {
+          setStatus("error", error.reason || error.message || "On-chain seal failed.");
+        } finally {
+          restore();
+        }
+      });
+    }
   }
 
   function initVerifyFlow() {
@@ -228,6 +380,7 @@
     const liveResult = document.getElementById("liveResult");
     const liveResultCard = document.getElementById("liveResultCard");
     const validationMsg = document.getElementById("verifyValidationMsg");
+    const verifyOnChainBtn = document.getElementById("verifyOnChainBtn");
 
     let chosenFile = null;
     let chosenProof = null;
@@ -330,6 +483,59 @@
         );
       }
     });
+
+    if (verifyOnChainBtn) {
+      verifyOnChainBtn.addEventListener("click", async () => {
+        if (validationMsg) validationMsg.hidden = true;
+
+        if (!chosenFile) {
+          if (validationMsg) {
+            validationMsg.hidden = false;
+            validationMsg.textContent = "Choose a file before checking Sepolia.";
+          }
+          return;
+        }
+
+        const restore = setButtonBusy(verifyOnChainBtn, "Checking...");
+        try {
+          const hash = await sha256Hex(chosenFile);
+          const contract = await getReadableContract();
+          const exists = await contract.verifyFile(fileHashToBytes32(hash));
+          const [sealer, sealedAt] = exists
+            ? await contract.getProof(fileHashToBytes32(hash))
+            : ["-", 0];
+
+          renderResult(
+            '<p class="result-status"><span class="status-pill" data-status="' +
+              (exists ? "sealed" : "mismatch") +
+              '"><span class="dot"></span>' +
+              (exists ? "Found on Sepolia" : "Not found on Sepolia") +
+              "</span></p>" +
+              '<div class="rline"><span class="rk">FILE</span><span class="rv">' +
+              escapeHtml(chosenFile.name) +
+              '</span></div>' +
+              '<div class="rline"><span class="rk">FINGERPRINT</span><span class="rv">' +
+              hash +
+              '</span></div>' +
+              '<div class="rline"><span class="rk">SEALER</span><span class="rv">' +
+              escapeHtml(sealer) +
+              '</span></div>' +
+              '<div class="rline"><span class="rk">SEALED AT</span><span class="rv">' +
+              escapeHtml(sealedAt ? humanTime(Number(sealedAt) * 1000) : "-") +
+              "</span></div>",
+            !exists
+          );
+        } catch (error) {
+          if (validationMsg) {
+            validationMsg.hidden = false;
+            validationMsg.textContent =
+              error.reason || error.message || "Could not check Sepolia.";
+          }
+        } finally {
+          restore();
+        }
+      });
+    }
   }
 
   function initReveal() {
@@ -370,6 +576,7 @@
 
   document.addEventListener("DOMContentLoaded", () => {
     initNavToggle();
+    initWalletControls();
     initSealFlow();
     initVerifyFlow();
     initReveal();

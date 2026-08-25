@@ -38,6 +38,12 @@
   <div class="wrap">
     <div class="seal-workspace">
       <div class="drop-card">
+        <div class="wallet-panel">
+          <h3>Wallet</h3>
+          <p class="hint" id="walletStatus">Connect MetaMask before sealing on-chain.</p>
+          <button class="btn btn-ghost" id="connectWalletBtn" type="button">Connect wallet</button>
+        </div>
+
         <h3>1. The file</h3>
         <p class="hint">The file is read locally to create its fingerprint. It is not uploaded or stored.</p>
         <div class="drop-zone-lg" id="sealDropzone" role="button" tabindex="0" aria-label="Choose a file to seal">
@@ -58,6 +64,7 @@
         <div class="record-actions" id="sealActions" hidden>
           <button class="btn btn-ghost" id="copyFingerprintBtn" type="button">Copy fingerprint</button>
           <button class="btn btn-stamp" id="downloadProofBtn" type="button">Download proof</button>
+          <button class="btn btn-stamp" id="sealOnChainBtn" type="button">Seal on Sepolia</button>
         </div>
       </div>
     </div>
@@ -80,6 +87,8 @@
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
+<script src="../contract-config.js"></script>
 <script src="../app.js"></script>
 </body>
 </html>

@@ -467,6 +467,38 @@
     flex-wrap:wrap;
     margin-top:24px;
   }
+  .wallet-panel{
+    border-bottom:1px solid var(--hair);
+    margin-bottom:24px;
+    padding-bottom:24px;
+  }
+  .wallet-strip{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+    background:var(--ink-2);
+    border:1px solid var(--hair);
+    border-radius:6px;
+    margin-bottom:28px;
+    padding:22px 24px;
+  }
+  .wallet-strip h3,
+  .wallet-panel h3{
+    font-family:var(--body);
+    font-size:0.98rem;
+    margin:0 0 6px;
+  }
+  .wallet-strip .hint,
+  .wallet-panel .hint{
+    color:var(--graphite);
+    font-size:0.86rem;
+    margin:0 0 14px;
+  }
+  .wallet-strip .hint{ margin-bottom:0; }
+  #walletStatus[data-status="success"]{ color:var(--verified); }
+  #walletStatus[data-status="error"]{ color:var(--stamp-hi); }
+  #walletStatus[data-status="info"]{ color:var(--graphite); }
   .drop-zone-lg{
     min-height:142px;
     display:flex;
@@ -532,4 +564,8 @@
 
   @media (max-width:880px){
     .seal-workspace{ grid-template-columns:1fr; }
+    .wallet-strip{
+      align-items:stretch;
+      flex-direction:column;
+    }
   }
