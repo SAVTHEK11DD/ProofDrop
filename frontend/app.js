@@ -13,8 +13,8 @@
     return new Date().toISOString().replace(/\.\d+Z$/, "Z");
   }
 
-  function humanTime(iso) {
-    const d = new Date(iso);
+  function humanTime(value) {
+    const d = new Date(value);
     return d.toISOString().slice(0, 19).replace("T", " ") + " UTC";
   }
 
@@ -52,6 +52,12 @@
   let walletSigner = null;
   let walletAddress = "";
 
+  function escapeHtml(str) {
+    const div = document.createElement("div");
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
   function shortAddress(address) {
     return address.slice(0, 6) + "..." + address.slice(-4);
   }
@@ -64,15 +70,52 @@
     return config.contractAddress || "";
   }
 
-  function getEthers() {
-    return window.ethers;
-  }
-
   function setWalletStatus(message, kind) {
     document.querySelectorAll("#walletStatus").forEach((el) => {
       el.textContent = message;
       el.dataset.status = kind || "info";
     });
+  }
+
+  function updateWalletButtons() {
+    document.querySelectorAll("#connectWalletBtn").forEach((button) => {
+      button.textContent = walletAddress ? "Disconnect wallet" : "Connect wallet";
+      button.dataset.connected = walletAddress ? "true" : "false";
+    });
+  }
+
+  async function requestAccountSelection() {
+    await window.ethereum.request({
+      method: "wallet_requestPermissions",
+      params: [{ eth_accounts: {} }],
+    });
+  }
+
+  async function revokeWalletPermission() {
+    try {
+      await window.ethereum.request({
+        method: "wallet_revokePermissions",
+        params: [{ eth_accounts: {} }],
+      });
+    } catch {
+      /* Some wallets do not support programmatic permission revocation. */
+    }
+  }
+
+  async function disconnectWallet(revokePermission) {
+    if (revokePermission && window.ethereum) {
+      await revokeWalletPermission();
+    }
+    walletProvider = null;
+    walletSigner = null;
+    walletAddress = "";
+    setWalletStatus(
+      revokePermission
+        ? "Wallet disconnected. Connect again to choose an account."
+        : "Wallet disconnected in ProofDrop.",
+      "info"
+    );
+    updateWalletButtons();
   }
 
   function setButtonBusy(button, label) {
@@ -83,6 +126,7 @@
     return () => {
       button.disabled = false;
       button.textContent = original;
+      updateWalletButtons();
     };
   }
 
@@ -101,19 +145,20 @@
   }
 
   async function connectWallet() {
-    const ethers = getEthers();
-    if (!window.ethereum || !ethers) {
+    if (!window.ethereum || !window.ethers) {
       throw new Error("MetaMask and ethers.js are required.");
     }
 
     await ensureSepolia();
-    walletProvider = new ethers.BrowserProvider(window.ethereum);
+    await requestAccountSelection();
+    walletProvider = new window.ethers.BrowserProvider(window.ethereum);
     walletSigner = await walletProvider.getSigner();
     walletAddress = await walletSigner.getAddress();
     setWalletStatus(
       "Connected to Sepolia as " + shortAddress(walletAddress),
       "success"
     );
+    updateWalletButtons();
     return walletSigner;
   }
 
@@ -158,8 +203,20 @@
       );
     }
 
+    updateWalletButtons();
+
     buttons.forEach((button) => {
       button.addEventListener("click", async () => {
+        if (walletAddress) {
+          const restore = setButtonBusy(button, "Disconnecting...");
+          try {
+            await disconnectWallet(true);
+          } finally {
+            restore();
+          }
+          return;
+        }
+
         const restore = setButtonBusy(button, "Connecting...");
         try {
           await connectWallet();
@@ -170,33 +227,26 @@
         }
       });
     });
-  }
 
-  function initNavToggle() {
-    const toggle = document.getElementById("navToggle");
-    const links = document.getElementById("navLinks");
-    if (!toggle || !links) return;
+    if (window.ethereum && window.ethereum.on) {
+      window.ethereum.on("accountsChanged", (accounts) => {
+        if (!accounts.length) {
+          disconnectWallet(false);
+          return;
+        }
+        walletAddress = accounts[0];
+        setWalletStatus(
+          "Connected to Sepolia as " + shortAddress(walletAddress),
+          "success"
+        );
+        updateWalletButtons();
+      });
 
-    function close() {
-      links.classList.remove("open");
-      toggle.setAttribute("aria-expanded", "false");
+      window.ethereum.on("chainChanged", () => {
+        disconnectWallet(false);
+        setWalletStatus("Network changed. Reconnect on Sepolia.", "info");
+      });
     }
-
-    function open() {
-      links.classList.add("open");
-      toggle.setAttribute("aria-expanded", "true");
-    }
-
-    toggle.addEventListener("click", () => {
-      const isOpen = links.classList.contains("open");
-      isOpen ? close() : open();
-    });
-
-    links.querySelectorAll("a").forEach((a) => a.addEventListener("click", close));
-
-    window.addEventListener("resize", () => {
-      if (window.innerWidth > 880) close();
-    });
   }
 
   function wireDropzone(zone, input, onFile) {
@@ -267,6 +317,7 @@
       current = null;
       actions.hidden = true;
       card.dataset.state = "hashing";
+      zone.classList.remove("has-file");
       zoneText.innerHTML =
         'Reading <span class="dz-filename">' + escapeHtml(file.name) + "</span>";
 
@@ -437,15 +488,9 @@
         return;
       }
 
-      const originalText = checkBtn.textContent;
-      checkBtn.disabled = true;
-      checkBtn.innerHTML =
-        '<span class="spinner" style="color:#ede8da;"></span> Checking...';
-
+      const restore = setButtonBusy(checkBtn, "Checking...");
       const hash = await sha256Hex(chosenFile);
-
-      checkBtn.disabled = false;
-      checkBtn.textContent = originalText;
+      restore();
 
       if (hash === record.fingerprint) {
         renderResult(
@@ -568,14 +613,7 @@
     });
   }
 
-  function escapeHtml(str) {
-    const div = document.createElement("div");
-    div.textContent = str;
-    return div.innerHTML;
-  }
-
   document.addEventListener("DOMContentLoaded", () => {
-    initNavToggle();
     initWalletControls();
     initSealFlow();
     initVerifyFlow();

@@ -1,5 +1,5 @@
 window.ProofDropConfig = {
-  contractAddress: "",
+  contractAddress: "0xCF5A3d185DF8826788A0208c593ee9925c42Da1a",
   sepoliaChainId: "0xaa36a7",
   sepoliaChainName: "Sepolia",
   abi: [
