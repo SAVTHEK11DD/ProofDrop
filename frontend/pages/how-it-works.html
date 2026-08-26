@@ -6,96 +6,68 @@
 <title>How it works - ProofDrop</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,680;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style1.css">
-<link rel="icon" type="image/png" href="https://res.cloudinary.com/dknulflaz/image/upload/v1787563526/proofdrop_logo_z8q7fx.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../ui.css">
 </head>
 <body>
-
-<header class="site">
-  <nav class="wrap">
-    <a href="../index.html" class="brand" style="text-decoration:none;">
-      <svg class="mark" viewBox="0 0 26 26"><circle cx="13" cy="13" r="12" fill="none" stroke="#a8342a" stroke-width="2"/><circle cx="13" cy="13" r="7.5" fill="none" stroke="#a8342a" stroke-width="1" stroke-dasharray="2 2"/></svg>
-      ProofDrop
-    </a>
-    <div class="navlinks">
-      <a href="how-it-works.html" class="active">How it works</a>
-      <a href="verify.html">Verify</a>
-      <a href="seal.html" class="btn btn-stamp btn-small">Seal a file</a>
-    </div>
-  </nav>
-</header>
-
-<section class="page-header">
-  <div class="wrap">
-    <div class="breadcrumb"><a href="../index.html">ProofDrop</a> / How it works</div>
-    <h1>What "sealed" means in v1</h1>
-    <p>ProofDrop starts by proving file integrity locally: hash the file, save a portable proof record, and verify the same bytes later. The blockchain anchor is the next layer.</p>
-  </div>
-</section>
-
-<section class="detail">
-  <div class="wrap">
-
-    <div class="detail-row">
-      <div class="detail-label">STEP 01 / DROP</div>
-      <div class="detail-body">
-        <h3>The file is fingerprinted, not uploaded</h3>
-        <p>When you drop a file into ProofDrop, it is hashed right in your browser using SHA-256. That one-way function turns the file into a fixed fingerprint. Change a single byte and the fingerprint changes.</p>
-        <ul>
-          <li>The file itself never leaves your device.</li>
-          <li>ProofDrop does not need to store the original file.</li>
-          <li>You can re-run the hash later and confirm it matches.</li>
-        </ul>
+<main class="shell">
+  <section class="glass subgrid">
+    <aside class="sidebar">
+      <a class="brand" href="../index.html">
+        <svg class="brand-mark" viewBox="0 0 24 24" fill="none"><path d="M12 2 5.5 11.6a7.2 7.2 0 1 0 13 0L12 2Z" stroke="currentColor" stroke-width="2.4"/><path d="M12 6.5 8.8 12a3.7 3.7 0 0 0 6.4 3.7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+        ProofDrop
+      </a>
+      <nav class="side-nav">
+        <a href="dashboard.html">▣ Dashboard</a>
+        <a href="dashboard.html">▤ My Proofs</a>
+        <a href="verify.html">⌕ Verify</a>
+        <a href="seal.html">＋ New Proof</a>
+        <a class="active" href="how-it-works.html">ⓘ About</a>
+      </nav>
+      <div class="side-bottom">
+        <div class="theme-toggle"><span>☀</span><span>☾</span></div>
+        <div class="wallet-chip"><span class="avatar"></span><span>Sepolia ready<br><small>ProofDrop v1</small></span></div>
       </div>
-    </div>
+    </aside>
 
-    <div class="detail-row">
-      <div class="detail-label">STEP 02 / SAVE</div>
-      <div class="detail-body">
-        <h3>The local proof record is created</h3>
-        <p>The seal page saves the filename, size, SHA-256 fingerprint, and timestamp into a small JSON proof record. For now, this is a local preview of the full blockchain flow.</p>
-        <ul>
-          <li>The downloaded proof record is portable.</li>
-          <li>It does not contain the actual file.</li>
-          <li>The next v1 milestone is recording the fingerprint on Sepolia through MetaMask.</li>
-        </ul>
+    <section class="content">
+      <div class="content-head">
+        <div>
+          <h1>How ProofDrop works</h1>
+          <p>A file authenticity flow built from local hashing, MetaMask, ethers.js, and a Solidity contract.</p>
+        </div>
+        <a class="btn btn-primary" href="seal.html">+ New Proof</a>
       </div>
-    </div>
 
-    <div class="detail-row">
-      <div class="detail-label">STEP 03 / VERIFY</div>
-      <div class="detail-body">
-        <h3>Anyone can check whether the file still matches</h3>
-        <p>Verification takes the original file and the proof record, recomputes the file fingerprint locally, and compares the two hashes. If they match, the file bytes are unchanged from the proof record.</p>
-        <ul>
-          <li>Verification does not require an account.</li>
-          <li>If one byte changed, the fingerprints will not match.</li>
-          <li>Once the blockchain layer is added, this same check will compare against the on-chain hash.</li>
-        </ul>
+      <div class="feature-row" style="padding:0">
+        <article class="panel feature">
+          <div class="feature-icon">1</div>
+          <h3>Hash locally</h3>
+          <p>The browser reads the selected file and calculates a SHA-256 fingerprint. The file itself is never uploaded.</p>
+        </article>
+        <article class="panel feature">
+          <div class="feature-icon">2</div>
+          <h3>Record on-chain</h3>
+          <p>MetaMask signs a Sepolia transaction that stores the fingerprint in the ProofDrop smart contract.</p>
+        </article>
+        <article class="panel feature">
+          <div class="feature-icon">3</div>
+          <h3>Verify anytime</h3>
+          <p>ProofDrop hashes the file again and checks whether that exact fingerprint exists on-chain.</p>
+        </article>
       </div>
-    </div>
 
-  </div>
-</section>
-
-<section class="cta-band">
-  <div class="wrap">
-    <h2>Ready to seal your first file?</h2>
-    <div class="hero-ctas">
-      <a href="seal.html" class="btn btn-stamp">Seal a file</a>
-      <a href="verify.html" class="btn btn-ghost">Verify a proof</a>
-    </div>
-  </div>
-</section>
-
-<footer class="site">
-  <div class="wrap footer-row">
-    <div class="brand">ProofDrop</div>
-    <div>Fingerprints stay yours. Seals stay portable.</div>
-  </div>
-</footer>
-
-<script src="../app.js"></script>
+      <div class="record-card section-band">
+        <p class="record-title">What ProofDrop stores</p>
+        <dl class="record-fields">
+          <dt>File hash</dt><dd>A `bytes32` SHA-256 fingerprint.</dd>
+          <dt>Sealer</dt><dd>The wallet address that recorded the proof.</dd>
+          <dt>Timestamp</dt><dd>The block timestamp from the Sepolia transaction.</dd>
+          <dt>File contents</dt><dd>Never stored, uploaded, or placed on-chain.</dd>
+        </dl>
+      </div>
+    </section>
+  </section>
+</main>
 </body>
 </html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Proofs - ProofDrop</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../ui.css">
+</head>
+<body>
+<main class="shell">
+  <section class="glass subgrid">
+    <aside class="sidebar">
+      <a class="brand" href="../index.html">
+        <svg class="brand-mark" viewBox="0 0 24 24" fill="none"><path d="M12 2 5.5 11.6a7.2 7.2 0 1 0 13 0L12 2Z" stroke="currentColor" stroke-width="2.4"/><path d="M12 6.5 8.8 12a3.7 3.7 0 0 0 6.4 3.7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+        ProofDrop
+      </a>
+      <nav class="side-nav">
+        <a class="active" href="dashboard.html">▣ Dashboard</a>
+        <a href="dashboard.html">▤ My Proofs</a>
+        <a href="verify.html">⌕ Verify</a>
+        <a href="how-it-works.html">◈ Activity</a>
+        <a href="how-it-works.html">⚙ Settings</a>
+        <a href="how-it-works.html">ⓘ About</a>
+      </nav>
+      <div class="side-bottom">
+        <div class="theme-toggle"><span>☀</span><span>☾</span></div>
+        <div class="wallet-chip"><span class="avatar"></span><span id="dashboardWallet">Wallet not connected<br><small>Sepolia</small></span></div>
+      </div>
+    </aside>
+
+    <section class="content">
+      <div class="content-head">
+        <div>
+          <h1>My Proofs</h1>
+          <p>All your file proofs recorded on the blockchain.</p>
+        </div>
+        <a class="btn btn-primary" href="seal.html">+ New Proof</a>
+      </div>
+
+      <div class="toolbar">
+        <input class="search" id="proofSearch" type="search" placeholder="Search proofs...">
+        <div class="filter-row">
+          <select class="select" id="networkFilter"><option>All Networks</option><option>Sepolia</option></select>
+          <select class="select" id="statusFilter"><option>All Status</option><option>Verified</option><option>Local</option></select>
+        </div>
+      </div>
+
+      <div class="record-card">
+        <table class="proof-table">
+          <thead>
+            <tr><th>File</th><th>Hash</th><th>Network</th><th>Date</th><th>Status</th></tr>
+          </thead>
+          <tbody id="proofTableBody">
+            <tr><td colspan="5" class="muted">No proofs yet. Create one to fill this table.</td></tr>
+          </tbody>
+        </table>
+        <div class="pagination"><span>&lt;</span><span class="page-num active">1</span><span>2</span><span>3</span><span>...</span><span>8</span><span>&gt;</span></div>
+      </div>
+    </section>
+  </section>
+</main>
+<script src="../contract-config.js"></script>
+<script src="../app.js"></script>
+</body>
+</html>

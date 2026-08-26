@@ -3,117 +3,98 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Verify a proof - ProofDrop</title>
+<title>Verify a file - ProofDrop</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,680;1,9..144,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style1.css">
-<link rel="icon" type="image/png" href="https://res.cloudinary.com/dknulflaz/image/upload/v1787563526/proofdrop_logo_z8q7fx.png">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../ui.css">
 </head>
 <body>
-
-<header class="site">
-  <nav class="wrap">
-    <a href="../index.html" class="brand" style="text-decoration:none;">
-      <svg class="mark" viewBox="0 0 26 26"><circle cx="13" cy="13" r="12" fill="none" stroke="#a8342a" stroke-width="2"/><circle cx="13" cy="13" r="7.5" fill="none" stroke="#a8342a" stroke-width="1" stroke-dasharray="2 2"/></svg>
-      ProofDrop
-    </a>
-    <div class="navlinks">
-      <a href="how-it-works.html">How it works</a>
-      <a href="verify.html" class="active">Verify</a>
-      <a href="seal.html" class="btn btn-stamp btn-small">Seal a file</a>
-    </div>
-  </nav>
-</header>
-
-<section class="page-header">
-  <div class="wrap">
-    <div class="breadcrumb"><a href="../index.html">ProofDrop</a> / Verify</div>
-    <h1>Verify a proof record</h1>
-    <p>Everything here runs in your browser. Choose the original file and the proof record you downloaded when you sealed it.</p>
-  </div>
-</section>
-
-<section class="verify-main">
-  <div class="wrap">
-    <div class="wallet-strip">
-      <div>
-        <h3>Wallet</h3>
-        <p class="hint" id="walletStatus">Connect MetaMask if you want to check the file hash on Sepolia.</p>
+<main class="shell">
+  <section class="glass subgrid">
+    <aside class="sidebar">
+      <a class="brand" href="../index.html">
+        <svg class="brand-mark" viewBox="0 0 24 24" fill="none"><path d="M12 2 5.5 11.6a7.2 7.2 0 1 0 13 0L12 2Z" stroke="currentColor" stroke-width="2.4"/><path d="M12 6.5 8.8 12a3.7 3.7 0 0 0 6.4 3.7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+        ProofDrop
+      </a>
+      <nav class="side-nav">
+        <a href="dashboard.html">▣ Dashboard</a>
+        <a href="dashboard.html">▤ My Proofs</a>
+        <a class="active" href="verify.html">⌕ Verify</a>
+        <a href="seal.html">＋ New Proof</a>
+        <a href="how-it-works.html">ⓘ About</a>
+      </nav>
+      <div class="side-bottom">
+        <div class="theme-toggle"><span>☀</span><span>☾</span></div>
+        <div class="wallet-chip"><span class="avatar"></span><span id="walletStatus">Connect MetaMask<br><small>Sepolia</small></span></div>
       </div>
-      <button class="btn btn-ghost" id="connectWalletBtn" type="button">Connect wallet</button>
-    </div>
+    </aside>
 
-    <div class="verify-grid">
-      <div class="drop-card">
-        <h3>1. The original file</h3>
-        <p class="hint">The exact file you want to check, with the same bytes as when it was sealed.</p>
-        <div class="drop-zone-lg" id="verifyFileDropzone" role="button" tabindex="0" aria-label="Choose the original file">
-          <span id="verifyFileDropzoneText">Drop the file here, or click to choose</span>
+    <section class="content">
+      <div class="content-head">
+        <div>
+          <h1>Verify a file</h1>
+          <p>Upload a file or paste a proof ID to verify its integrity.</p>
         </div>
-        <input id="verifyFileInput" type="file" hidden>
-      </div>
-      <div class="drop-card">
-        <h3>2. The proof record</h3>
-        <p class="hint">The .proofdrop.json file created by the local sealing step.</p>
-        <div class="drop-zone-lg" id="verifyProofDropzone" role="button" tabindex="0" aria-label="Choose the proof record">
-          <span id="verifyProofDropzoneText">Drop the proof record here, or click to choose</span>
-        </div>
-        <input id="verifyProofInput" type="file" accept="application/json,.json" hidden>
-      </div>
-    </div>
-
-    <div class="verify-action">
-      <button class="btn btn-stamp" id="verifyCheckBtn" type="button">Check now</button>
-      <button class="btn btn-ghost" id="verifyOnChainBtn" type="button">Check on Sepolia</button>
-      <p class="validation-msg" id="verifyValidationMsg" hidden></p>
-    </div>
-
-    <div class="result-examples" id="liveResult" hidden>
-      <div class="section-head">
-        <div class="eyebrow"><span class="dot"></span> RESULT</div>
-        <h2>Verification result</h2>
-        <p>ProofDrop recomputed the SHA-256 hash locally and compared it with the proof record.</p>
+        <button class="btn btn-primary" id="connectWalletBtn" type="button">Connect wallet</button>
       </div>
 
-      <div class="result-card" id="liveResultCard"></div>
-    </div>
-
-    <div class="result-examples">
-      <div class="section-head">
-        <div class="eyebrow"><span class="dot"></span> WHAT YOU WILL SEE</div>
-        <h2>Two possible outcomes</h2>
-        <p>If the fingerprints line up, the file matches. If they do not, the file has changed or the proof belongs to a different file.</p>
-      </div>
-
-      <div class="result-grid">
-        <div class="result-card">
-          <p class="result-status"><span class="dot"></span>Verified - file matches seal</p>
-          <div class="rline"><span class="rk">FILE</span><span class="rv">contract_final.pdf</span></div>
-          <div class="rline"><span class="rk">FINGERPRINT</span><span class="rv">9f2c4d1a...e88c</span></div>
-          <div class="rline"><span class="rk">SEALED AT</span><span class="rv">2026-08-24 09:14 UTC</span></div>
-          <div class="rline"><span class="rk">ANCHOR</span><span class="rv">Local preview</span></div>
+      <div class="verify-layout">
+        <div class="panel">
+          <div class="tabs">
+            <button class="tab active" type="button" data-verify-tab="file">Upload File</button>
+            <button class="tab" type="button" data-verify-tab="proof">Proof ID</button>
+          </div>
+          <div id="fileVerifyPanel">
+            <div class="drop-zone-lg" id="verifyFileDropzone" role="button" tabindex="0" aria-label="Choose the original file">
+              <div>
+                <div class="upload-icon">☁</div>
+                <div id="verifyFileDropzoneText">Tap to upload file<br><span class="muted">Max file size: 100MB</span></div>
+              </div>
+            </div>
+            <input id="verifyFileInput" type="file" hidden>
+          </div>
+          <div id="proofIdPanel" hidden>
+            <label class="muted" for="proofIdInput">Paste a SHA-256 hash or transaction hash</label>
+            <input class="search" id="proofIdInput" type="text" placeholder="0x... or SHA-256 hash">
+          </div>
+          <div class="panel section-band">
+            <p class="record-title">Or choose from</p>
+            <p>▣ Files <span style="float:right">›</span></p>
+            <p>▧ Photos <span style="float:right">›</span></p>
+          </div>
+          <div class="record-actions">
+            <button class="btn btn-primary" id="verifyOnChainBtn" type="button">Check on Sepolia</button>
+            <button class="btn btn-ghost" id="verifyCheckBtn" type="button">Check local proof</button>
+          </div>
+          <p class="validation-msg" id="verifyValidationMsg" hidden></p>
+          <div class="drop-zone-lg" id="verifyProofDropzone" role="button" tabindex="0" aria-label="Choose the proof record">
+            <div>
+              <div class="upload-icon">☁</div>
+              <div id="verifyProofDropzoneText">Choose local proof record</div>
+            </div>
+          </div>
+          <input id="verifyProofInput" type="file" accept="application/json,.json" hidden>
         </div>
 
-        <div class="result-card mismatch">
-          <p class="result-status"><span class="dot"></span>No match - file has changed</p>
-          <div class="rline"><span class="rk">FILE</span><span class="rv">contract_final_v2.pdf</span></div>
-          <div class="rline"><span class="rk">EXPECTED</span><span class="rv">9f2c4d1a...e88c</span></div>
-          <div class="rline"><span class="rk">GOT</span><span class="rv">3b71ea90...f102</span></div>
-          <div class="rline"><span class="rk">SEALED AT</span><span class="rv">2026-08-24 09:14 UTC</span></div>
+        <div>
+          <div class="result-card" id="liveResultCard">
+            <p class="record-title">Verification Result ⓘ</p>
+            <div class="success-mark">✓</div>
+            <h2 style="text-align:center">Ready to verify</h2>
+            <p style="text-align:center">Upload a file to check whether its hash exists on-chain.</p>
+          </div>
+          <div class="result-card section-band">
+            <p class="record-title">What is verified?</p>
+            <p>◇ File integrity (hash match)</p>
+            <p>▣ On-chain record existence</p>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-</section>
-
-<footer class="site">
-  <div class="wrap footer-row">
-    <div class="brand">ProofDrop</div>
-    <div>Fingerprints stay yours. Seals stay portable.</div>
-  </div>
-</footer>
-
+      <div id="liveResult" hidden></div>
+    </section>
+  </section>
+</main>
 <script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
 <script src="../contract-config.js"></script>
 <script src="../app.js"></script>
