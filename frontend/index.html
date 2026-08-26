@@ -25,7 +25,7 @@
         <a href="../README.md">Docs</a>
       </nav>
       <div class="top-actions">
-        <a class="btn btn-primary" href="pages/seal.html">Connect Wallet</a>
+        <button class="btn btn-primary" id="connectWalletBtn" type="button">Connect wallet</button>
         <button class="btn btn-icon" type="button" aria-label="Toggle theme">C</button>
       </div>
     </header>
@@ -73,10 +73,12 @@
       <span>Artists</span>
       <span>Startups</span>
       <span>Enterprises</span>
-      <span class="wallet-chip"><span class="avatar"></span><span>0x7A3...9b2f<br><small>Sepolia</small></span></span>
+      <span class="wallet-chip"><span class="avatar"></span><span id="walletStatus">Connect MetaMask<br><small>Sepolia</small></span></span>
     </div>
   </section>
 </main>
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.5/dist/ethers.umd.min.js"></script>
+<script src="contract-config.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
