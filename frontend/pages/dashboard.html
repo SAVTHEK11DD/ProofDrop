@@ -18,12 +18,37 @@
         ProofDrop
       </a>
       <nav class="side-nav">
-        <a class="active" href="dashboard.html">▣ Dashboard</a>
-        <a href="dashboard.html">▤ My Proofs</a>
-        <a href="verify.html">⌕ Verify</a>
-        <a href="how-it-works.html">◈ Activity</a>
-        <a href="how-it-works.html">⚙ Settings</a>
-        <a href="how-it-works.html">ⓘ About</a>
+        <a class="active" href="dashboard.html">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#2196F3" stroke="none">
+  <rect width="7" height="9" x="3" y="3" rx="1"/>
+  <rect width="7" height="5" x="14" y="3" rx="1"/>
+  <rect width="7" height="9" x="14" y="12" rx="1"/>
+  <rect width="7" height="5" x="3" y="16" rx="1"/>
+</svg>
+Dashboard
+        </a>
+        <a href="seal.html">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+          </svg>
+          New Proof
+        </a>
+        
+        <a href="verify.html">
+<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="24" height="24" viewBox="0 0 48 48">
+      <path fill="#616161" d="M34.6 28.1H38.6V45.1H34.6z" transform="rotate(-45.001 36.586 36.587)"></path><path fill="#616161" d="M20 4A16 16 0 1 0 20 36A16 16 0 1 0 20 4Z"></path><path fill="#37474F" d="M36.2 32.1H40.2V44.400000000000006H36.2z" transform="rotate(-45.001 38.24 38.24)"></path><path fill="#64B5F6" d="M20 7A13 13 0 1 0 20 33A13 13 0 1 0 20 7Z"></path>
+</svg>
+Verify
+</a>
+        
+        
+        <a href="how-it-works.html">
+  <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="24" height="24" viewBox="0 0 48 48">
+    <path fill="#2196F3" d="M37,40H11l-6,6V12c0-3.3,2.7-6,6-6h26c3.3,0,6,2.7,6,6v22C43,37.3,40.3,40,37,40z"></path>
+    <path fill="#FFF" d="M22 20H26V31H22zM24 13A2 2 0 1 0 24 17 2 2 0 1 0 24 13z"></path>
+  </svg>
+  About
+</a>
       </nav>
       <div class="side-bottom">
         <div class="theme-toggle"><span>☀</span><span>☾</span></div>
@@ -39,6 +64,34 @@
         </div>
         <a class="btn btn-primary" href="seal.html">+ New Proof</a>
       </div>
+
+      <section class="dashboard-directory" aria-label="Proof actions">
+        <a class="directory-card directory-card-primary" href="seal.html">
+          <span class="directory-icon">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/>
+            </svg>
+          </span>
+          <span>
+            <strong>Create a new proof</strong>
+            <small>Upload a file, review the SHA-256 fingerprint, then record it on Sepolia.</small>
+          </span>
+          <span class="directory-arrow">-&gt;</span>
+        </a>
+
+        <div class="metric-card">
+          <span>Total proofs</span>
+          <strong id="proofCount">0</strong>
+        </div>
+        <div class="metric-card">
+          <span>On-chain</span>
+          <strong id="verifiedCount">0</strong>
+        </div>
+        <div class="metric-card metric-card-wide">
+          <span>Latest proof</span>
+          <strong id="latestProof">No proofs yet</strong>
+        </div>
+      </section>
 
       <div class="toolbar">
         <input class="search" id="proofSearch" type="search" placeholder="Search proofs...">
@@ -57,7 +110,7 @@
             <tr><td colspan="5" class="muted">No proofs yet. Create one to fill this table.</td></tr>
           </tbody>
         </table>
-        <div class="pagination"><span>&lt;</span><span class="page-num active">1</span><span>2</span><span>3</span><span>...</span><span>8</span><span>&gt;</span></div>
+        <div class="pagination" id="proofPagination" aria-label="Proof table pages"></div>
       </div>
     </section>
   </section>

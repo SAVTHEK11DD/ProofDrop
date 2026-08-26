@@ -18,11 +18,28 @@
         ProofDrop
       </a>
       <nav class="side-nav">
-        <a href="dashboard.html">▣ Dashboard</a>
-        <a href="dashboard.html">▤ My Proofs</a>
-        <a href="verify.html">⌕ Verify</a>
-        <a class="active" href="seal.html">＋ New Proof</a>
-        <a href="how-it-works.html">ⓘ About</a>
+        <a href="dashboard.html">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#2196F3" stroke="none" aria-hidden="true">
+            <rect width="7" height="9" x="3" y="3" rx="1"/>
+            <rect width="7" height="5" x="14" y="3" rx="1"/>
+            <rect width="7" height="9" x="14" y="12" rx="1"/>
+            <rect width="7" height="5" x="3" y="16" rx="1"/>
+          </svg>
+          Dashboard
+        </a>
+        <a href="verify.html">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 48 48" aria-hidden="true">
+            <path fill="#616161" d="M34.6 28.1H38.6V45.1H34.6z" transform="rotate(-45.001 36.586 36.587)"></path><path fill="#616161" d="M20 4A16 16 0 1 0 20 36A16 16 0 1 0 20 4Z"></path><path fill="#37474F" d="M36.2 32.1H40.2V44.4H36.2z" transform="rotate(-45.001 38.24 38.24)"></path><path fill="#64B5F6" d="M20 7A13 13 0 1 0 20 33A13 13 0 1 0 20 7Z"></path>
+          </svg>
+          Verify
+        </a>
+        <a href="how-it-works.html">
+  <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="24" height="24" viewBox="0 0 48 48">
+    <path fill="#2196F3" d="M37,40H11l-6,6V12c0-3.3,2.7-6,6-6h26c3.3,0,6,2.7,6,6v22C43,37.3,40.3,40,37,40z"></path>
+    <path fill="#FFF" d="M22 20H26V31H22zM24 13A2 2 0 1 0 24 17 2 2 0 1 0 24 13z"></path>
+  </svg>
+  About
+</a>
       </nav>
       <div class="side-bottom">
         <div class="theme-toggle"><span>☀</span><span>☾</span></div>
@@ -39,11 +56,11 @@
         <button class="btn btn-primary" id="connectWalletBtn" type="button">Connect wallet</button>
       </div>
 
-      <div class="stepper">
-        <div class="step active"><span>1</span>Upload</div><div class="step-line"></div>
-        <div class="step"><span>2</span>Review</div><div class="step-line"></div>
-        <div class="step"><span>3</span>Record</div><div class="step-line"></div>
-        <div class="step"><span>4</span>Done</div>
+      <div class="stepper" id="sealStepper" aria-label="Proof creation progress">
+        <div class="step active" data-step="upload"><span>1</span>Upload</div><div class="step-line"></div>
+        <div class="step" data-step="review"><span>2</span>Review</div><div class="step-line"></div>
+        <div class="step" data-step="record"><span>3</span>Record</div><div class="step-line"></div>
+        <div class="step" data-step="done"><span>4</span>Done</div>
       </div>
 
       <div class="proof-flow">
@@ -77,9 +94,15 @@
         </div>
       </div>
 
-      <div class="success-card record-card" id="recordedPanel" hidden>
-        <div class="success-mark">✓</div>
-        <h1>Proof recorded!</h1>
+      <div class="modal-backdrop" id="recordedPanel" hidden>
+        <div class="success-card record-card modal-card" role="dialog" aria-modal="true" aria-labelledby="recordedTitle">
+        <button class="modal-close" id="closeRecordedPanel" type="button" aria-label="Close recorded proof popup">&times;</button>
+        <div class="success-mark">
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path d="m6 12 4 4 8-9" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h1 id="recordedTitle">Proof recorded!</h1>
         <p>Your file fingerprint has been successfully recorded on the blockchain.</p>
         <dl class="record-fields">
           <dt>Transaction Hash</dt><dd id="recordedTx">-</dd>
@@ -90,6 +113,7 @@
         <div class="record-actions">
           <a class="btn btn-primary btn-wide" id="explorerLink" href="#" target="_blank" rel="noreferrer">View on Explorer</a>
           <a class="btn btn-ghost btn-wide" href="dashboard.html">Back to Dashboard</a>
+        </div>
         </div>
       </div>
     </section>

@@ -2,11 +2,24 @@
   "use strict";
 
   async function sha256Hex(file) {
-    const buffer = await file.arrayBuffer();
+    const buffer = await readFileBuffer(file);
     const digest = await crypto.subtle.digest("SHA-256", buffer);
     return Array.from(new Uint8Array(digest))
       .map((b) => b.toString(16).padStart(2, "0"))
       .join("");
+  }
+
+  function readFileBuffer(file) {
+    if (file && typeof file.arrayBuffer === "function") {
+      return file.arrayBuffer();
+    }
+
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = () => reject(reader.error);
+      reader.readAsArrayBuffer(file);
+    });
   }
 
   function isoNow() {
@@ -108,6 +121,8 @@
     const dashboardWallet = document.getElementById("dashboardWallet");
     if (dashboardWallet && walletAddress) {
       dashboardWallet.innerHTML = shortAddress(walletAddress) + "<br><small>Sepolia</small>";
+    } else if (dashboardWallet) {
+      dashboardWallet.innerHTML = "Wallet not connected<br><small>Sepolia</small>";
     }
   }
 
@@ -116,6 +131,28 @@
       button.textContent = walletAddress ? "Disconnect wallet" : "Connect wallet";
       button.dataset.connected = walletAddress ? "true" : "false";
     });
+  }
+
+  async function restoreWalletSession() {
+    if (!window.ethereum || !window.ethers) return;
+    if (localStorage.getItem("proofdrop:walletConnected") !== "true") return;
+
+    const accounts = await window.ethereum.request({ method: "eth_accounts" });
+    if (!accounts.length) {
+      localStorage.removeItem("proofdrop:walletConnected");
+      updateWalletButtons();
+      return;
+    }
+
+    await ensureSepolia();
+    walletProvider = new window.ethers.BrowserProvider(window.ethereum);
+    walletSigner = await walletProvider.getSigner();
+    walletAddress = await walletSigner.getAddress();
+    setWalletStatus(
+      "Connected to Sepolia as " + shortAddress(walletAddress),
+      "success"
+    );
+    updateWalletButtons();
   }
 
   async function requestAccountSelection() {
@@ -143,6 +180,7 @@
     walletProvider = null;
     walletSigner = null;
     walletAddress = "";
+    localStorage.removeItem("proofdrop:walletConnected");
     setWalletStatus(
       revokePermission
         ? "Wallet disconnected. Connect again to choose an account."
@@ -188,6 +226,7 @@
     walletProvider = new window.ethers.BrowserProvider(window.ethereum);
     walletSigner = await walletProvider.getSigner();
     walletAddress = await walletSigner.getAddress();
+    localStorage.setItem("proofdrop:walletConnected", "true");
     setWalletStatus(
       "Connected to Sepolia as " + shortAddress(walletAddress),
       "success"
@@ -226,7 +265,6 @@
 
   function initWalletControls() {
     const buttons = document.querySelectorAll("#connectWalletBtn");
-    if (!buttons.length) return;
 
     if (!window.ethereum) {
       setWalletStatus("MetaMask was not detected in this browser.", "error");
@@ -238,6 +276,12 @@
     }
 
     updateWalletButtons();
+    restoreWalletSession().catch((error) => {
+      setWalletStatus(error.message || "Reconnect wallet on Sepolia.", "info");
+      updateWalletButtons();
+    });
+
+    if (!buttons.length) return;
 
     buttons.forEach((button) => {
       button.addEventListener("click", async () => {
@@ -336,8 +380,25 @@
     const copyBtn = document.getElementById("copyFingerprintBtn");
     const downloadBtn = document.getElementById("downloadProofBtn");
     const sealOnChainBtn = document.getElementById("sealOnChainBtn");
+    const stepper = document.getElementById("sealStepper");
+    const recordedPanel = document.getElementById("recordedPanel");
+    const closeRecordedPanel = document.getElementById("closeRecordedPanel");
 
     let current = null;
+    const stepOrder = ["upload", "review", "record", "done"];
+
+    function setStep(activeStep) {
+      if (!stepper) return;
+      const activeIndex = stepOrder.indexOf(activeStep);
+      stepper.querySelectorAll(".step").forEach((step) => {
+        const stepIndex = stepOrder.indexOf(step.dataset.step);
+        step.classList.toggle("active", stepIndex === activeIndex);
+        step.classList.toggle("done", stepIndex >= 0 && stepIndex < activeIndex);
+      });
+      stepper.querySelectorAll(".step-line").forEach((line, index) => {
+        line.classList.toggle("done", index < activeIndex);
+      });
+    }
 
     function setStatus(status, label) {
       fieldStatus.innerHTML =
@@ -348,9 +409,26 @@
         "</span>";
     }
 
+    function openRecordedPanel() {
+      if (!recordedPanel) return;
+      recordedPanel.hidden = false;
+      requestAnimationFrame(() => recordedPanel.classList.add("is-open"));
+    }
+
+    function closeRecordedModal() {
+      if (!recordedPanel) return;
+      recordedPanel.classList.remove("is-open");
+      window.setTimeout(() => {
+        recordedPanel.hidden = true;
+      }, prefersReducedMotion ? 0 : 240);
+    }
+
     async function handleFile(file) {
       current = null;
       actions.hidden = true;
+      if (sealOnChainBtn) sealOnChainBtn.disabled = true;
+      closeRecordedModal();
+      setStep("upload");
       card.dataset.state = "hashing";
       zone.classList.remove("has-file");
       zoneText.innerHTML =
@@ -359,17 +437,18 @@
       fieldFile.textContent = file.name;
       if (fieldSize) fieldSize.textContent = formatBytes(file.size);
       fieldFingerprint.textContent = "-";
-      fieldSealedAt.textContent = "-";
+      if (fieldSealedAt) fieldSealedAt.textContent = "-";
       fieldAnchor.textContent = "-";
       setStatus("hashing", "Hashing file locally...");
 
       const hash = await sha256Hex(file);
       await wait(prefersReducedMotion ? 0 : 450);
 
+      setStep("review");
       setStatus("pending", "Creating local proof record...");
       fieldFingerprint.textContent = hash;
       const sealedAt = isoNow();
-      fieldSealedAt.textContent = humanTime(sealedAt);
+      if (fieldSealedAt) fieldSealedAt.textContent = humanTime(sealedAt);
       fieldAnchor.textContent = "Preparing local preview...";
 
       await wait(prefersReducedMotion ? 0 : 700);
@@ -396,6 +475,7 @@
         note: "This proof record was created in the ProofDrop local browser preview. Blockchain anchoring is not connected yet.",
       };
       actions.hidden = false;
+      if (sealOnChainBtn) sealOnChainBtn.disabled = false;
     }
 
     wireDropzone(zone, input, (file) => {
@@ -427,10 +507,12 @@
     }
 
     if (sealOnChainBtn) {
+      sealOnChainBtn.disabled = true;
       sealOnChainBtn.addEventListener("click", async () => {
         if (!current) return;
         const restore = setButtonBusy(sealOnChainBtn, "Sealing...");
         try {
+          setStep("record");
           const contract = await getWritableContract();
           const tx = await contract.sealFile(fileHashToBytes32(current.fingerprint));
           setStatus("pending", "Waiting for Sepolia confirmation...");
@@ -446,25 +528,41 @@
           current.sealer = walletAddress;
           fieldAnchor.textContent = current.anchor;
           setStatus("sealed", "Sealed on Sepolia");
+          setStep("done");
           saveProofRecord(current);
 
-          const recordedPanel = document.getElementById("recordedPanel");
           const recordedTx = document.getElementById("recordedTx");
           const recordedBlock = document.getElementById("recordedBlock");
           const recordedTime = document.getElementById("recordedTime");
           const explorerLink = document.getElementById("explorerLink");
-          if (recordedPanel) recordedPanel.hidden = false;
           if (recordedTx) recordedTx.textContent = shortHash(receipt.hash);
           if (recordedBlock) recordedBlock.textContent = String(receipt.blockNumber);
           if (recordedTime) recordedTime.textContent = block ? humanTime(Number(block.timestamp) * 1000) : humanTime(Date.now());
           if (explorerLink) explorerLink.href = "https://sepolia.etherscan.io/tx/" + receipt.hash;
+          openRecordedPanel();
         } catch (error) {
           setStatus("error", error.reason || error.message || "On-chain seal failed.");
+          setStep(current ? "review" : "upload");
         } finally {
           restore();
+          if (!current) sealOnChainBtn.disabled = true;
         }
       });
     }
+
+    if (closeRecordedPanel) {
+      closeRecordedPanel.addEventListener("click", closeRecordedModal);
+    }
+    if (recordedPanel) {
+      recordedPanel.addEventListener("click", (event) => {
+        if (event.target === recordedPanel) closeRecordedModal();
+      });
+    }
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && recordedPanel && !recordedPanel.hidden) {
+        closeRecordedModal();
+      }
+    });
   }
 
   function initVerifyFlow() {
@@ -689,6 +787,48 @@
     });
   }
 
+  function initPageTransitions() {
+    const reduceMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    document.body.classList.add("page-ready");
+    if (reduceMotion) return;
+
+    document.addEventListener("click", (event) => {
+      const link = event.target.closest("a[href]");
+      if (!link) return;
+      if (event.defaultPrevented || event.button !== 0) return;
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      if (link.target && link.target !== "_self") return;
+      if (link.hasAttribute("download")) return;
+
+      const nextUrl = new URL(link.getAttribute("href"), window.location.href);
+      const currentUrl = new URL(window.location.href);
+      const isSameOrigin = nextUrl.origin === currentUrl.origin;
+      const isSamePage =
+        nextUrl.pathname === currentUrl.pathname &&
+        nextUrl.search === currentUrl.search &&
+        nextUrl.hash === currentUrl.hash;
+      const isFrontendPage =
+        nextUrl.pathname.endsWith(".html") ||
+        nextUrl.pathname.endsWith("/") ||
+        nextUrl.pathname.endsWith("/frontend");
+
+      if (!isSameOrigin || isSamePage || !isFrontendPage) return;
+
+      event.preventDefault();
+      document.body.classList.add("page-leaving");
+      window.setTimeout(() => {
+        window.location.href = nextUrl.href;
+      }, 220);
+    });
+
+    window.addEventListener("pageshow", () => {
+      document.body.classList.remove("page-leaving");
+      document.body.classList.add("page-ready");
+    });
+  }
+
   function initDashboard() {
     const tableBody = document.getElementById("proofTableBody");
     if (!tableBody) return;
@@ -697,6 +837,52 @@
     const search = document.getElementById("proofSearch");
     const networkFilter = document.getElementById("networkFilter");
     const statusFilter = document.getElementById("statusFilter");
+    const pagination = document.getElementById("proofPagination");
+    const proofCount = document.getElementById("proofCount");
+    const verifiedCount = document.getElementById("verifiedCount");
+    const latestProof = document.getElementById("latestProof");
+    const pageSize = 5;
+    let currentPage = 1;
+
+    if (proofCount) proofCount.textContent = records.length.toString();
+    if (verifiedCount) {
+      verifiedCount.textContent = records
+        .filter((record) => record.chain === "sepolia")
+        .length.toString();
+    }
+    if (latestProof) {
+      latestProof.textContent = records[0]
+        ? records[0].file || shortHash(records[0].fingerprint)
+        : "No proofs yet";
+    }
+
+    function renderPagination(totalPages) {
+      if (!pagination) return;
+      if (totalPages <= 1) {
+        pagination.innerHTML = "";
+        return;
+      }
+
+      pagination.innerHTML =
+        '<button class="page-control" type="button" data-page="prev" aria-label="Previous page">&lt;</button>' +
+        Array.from({ length: totalPages }, (_, index) => index + 1)
+          .map((page) => {
+            return (
+              '<button class="page-num' +
+              (page === currentPage ? " active" : "") +
+              '" type="button" data-page="' +
+              page +
+              '">' +
+              page +
+              "</button>"
+            );
+          })
+          .join("") +
+        '<button class="page-control" type="button" data-page="next" aria-label="Next page">&gt;</button>';
+
+      pagination.querySelector('[data-page="prev"]').disabled = currentPage === 1;
+      pagination.querySelector('[data-page="next"]').disabled = currentPage === totalPages;
+    }
 
     function render() {
       const query = (search ? search.value : "").toLowerCase();
@@ -713,14 +899,21 @@
         const matchesStatus = statusChoice === "All Status" || status === statusChoice;
         return matchesQuery && matchesNetwork && matchesStatus;
       });
+      const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+      currentPage = Math.min(currentPage, totalPages);
+      const pageRecords = filtered.slice(
+        (currentPage - 1) * pageSize,
+        currentPage * pageSize
+      );
 
       if (!filtered.length) {
         tableBody.innerHTML =
           '<tr><td colspan="5" class="muted">No proofs match the current view.</td></tr>';
+        renderPagination(0);
         return;
       }
 
-      tableBody.innerHTML = filtered
+      tableBody.innerHTML = pageRecords
         .map((record) => {
         const network = record.chain === "sepolia" ? "Sepolia" : "Local";
         const status = record.chain === "sepolia" ? "Verified" : "Local";
@@ -747,15 +940,44 @@
         );
       })
       .join("");
+      renderPagination(totalPages);
+    }
+
+    if (pagination) {
+      pagination.addEventListener("click", (event) => {
+        const target = event.target.closest("[data-page]");
+        if (!target || target.disabled) return;
+        const page = target.dataset.page;
+        if (page === "prev") currentPage -= 1;
+        else if (page === "next") currentPage += 1;
+        else currentPage = Number(page);
+        render();
+      });
     }
 
     render();
-    if (search) search.addEventListener("input", render);
-    if (networkFilter) networkFilter.addEventListener("change", render);
-    if (statusFilter) statusFilter.addEventListener("change", render);
+    if (search) {
+      search.addEventListener("input", () => {
+        currentPage = 1;
+        render();
+      });
+    }
+    if (networkFilter) {
+      networkFilter.addEventListener("change", () => {
+        currentPage = 1;
+        render();
+      });
+    }
+    if (statusFilter) {
+      statusFilter.addEventListener("change", () => {
+        currentPage = 1;
+        render();
+      });
+    }
   }
 
   document.addEventListener("DOMContentLoaded", () => {
+    initPageTransitions();
     initWalletControls();
     initSealFlow();
     initVerifyFlow();
