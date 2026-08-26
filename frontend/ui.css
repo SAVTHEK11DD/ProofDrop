@@ -56,6 +56,11 @@ button,input,select{font:inherit}
 .navlinks{display:flex;align-items:center;gap:30px;color:var(--muted);font-size:.92rem}
 .navlinks a:hover,.navlinks a.active{color:var(--blue-2)}
 .top-actions{display:flex;align-items:center;gap:12px}
+.top-actions .wallet-chip{margin-left:0}
+.wallet-chip-compact{min-height:44px;padding:8px 12px;font-size:.86rem}
+.wallet-chip-compact .wallet-icon{width:24px;height:24px}
+.wallet-chip-compact #walletStatus:empty{display:none}
+.wallet-chip-compact:has(#walletStatus:empty){width:44px;height:44px;padding:0;justify-content:center}
 .btn{
   display:inline-flex;
   align-items:center;
@@ -182,7 +187,18 @@ button,input,select{font:inherit}
   padding:10px 14px;
   background:rgba(255,255,255,.03);
 }
-.avatar{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,#d9e8ff,#3f7dff)}
+.wallet-icon{
+  width:28px;
+  height:28px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  flex:0 0 auto;
+  background:linear-gradient(135deg,#1f6bff,#36a3ff);
+  color:#fafafa;
+}
+.wallet-icon svg{width:17px;height:17px}
+.btn .wallet-button-icon{width:18px;height:18px;color:#fafafa;flex:0 0 auto}
 .subgrid{display:grid;grid-template-columns:280px 1fr;min-height:760px}
 .sidebar{
   border-right:1px solid var(--line);
@@ -200,9 +216,6 @@ button,input,select{font:inherit}
 .nav-icon{width:24px;height:24px;color:var(--blue-2);flex:0 0 auto}
 .side-nav a.active,.side-nav a:hover{background:rgba(31,107,255,.12);color:var(--blue-2)}
 .side-bottom{margin-top:auto;display:grid;gap:14px}
-.theme-toggle{display:flex;gap:8px;width:max-content;border:1px solid var(--line);border-radius:999px;padding:7px;background:rgba(255,255,255,.04)}
-.theme-toggle span{width:28px;height:28px;border-radius:50%;display:grid;place-items:center}
-.theme-toggle span:first-child{background:rgba(31,107,255,.15);color:#ffd45e}
 .content{padding:48px}
 .content-head{display:flex;justify-content:space-between;align-items:flex-start;gap:22px;margin-bottom:28px}
 .content h1{font-size:2.2rem;margin:0 0 8px}
