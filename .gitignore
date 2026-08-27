@@ -6,3 +6,4 @@ coverage/
 coverage.json
 typechain-types/
 deployments/
+frontend-next/.next/
