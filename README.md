@@ -16,16 +16,19 @@ In v1, a user selects a file, ProofDrop calculates the file's SHA-256 hash in th
 
 ## How The Stack Works
 
-ProofDrop is intentionally simple for v1.
+ProofDrop uses a Next.js frontend and a Solidity smart contract. File hashing stays in the browser, while only the resulting hash is sent to the blockchain.
 
 | Layer | Tech | Role |
 | --- | --- | --- |
-| Frontend | HTML, CSS, vanilla JavaScript | File selection, hashing, local proof download, wallet UI, verification UI |
-| Wallet | MetaMask | Connects the user's account and signs transactions |
-| Web3 library | ethers.js | Lets the frontend call the smart contract from the browser |
-| Smart contract | Solidity | Stores file hashes, sealer addresses, and timestamps |
-| Dev tooling | Hardhat | Compiles, tests, and deploys the contract |
+| Frontend framework | Next.js 15, React 19, JSX | App Router pages and interactive proof workflows |
+| Styling | CSS | Responsive application layout and component styling |
+| File hashing | Browser Web Crypto API | Creates SHA-256 fingerprints locally without uploading files |
+| Wallet and Web3 | MetaMask, EIP-1193 provider, JSON-RPC | Connects accounts, switches networks, submits transactions, and reads contract data |
+| Smart contract | Solidity 0.8.28 | Stores file hashes, sealer addresses, and timestamps |
+| Contract tooling | Hardhat, Hardhat Toolbox | Compiles, tests, and deploys the contract |
+| Runtime and packages | Node.js, npm | Runs the frontend and contract development scripts |
 | Network | Sepolia | Ethereum testnet used for v1 deployment |
+
 
 ## User Flow
 
