@@ -777,6 +777,119 @@ h2 {
   white-space: nowrap;
 }
 
+.walletModalBackdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(17, 19, 22, 0.58);
+  animation: walletBackdropIn 180ms ease both;
+}
+
+@keyframes walletBackdropIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.walletModal {
+  position: relative;
+  width: min(530px, 100%);
+  overflow: hidden;
+  border: 1px solid rgba(8, 127, 122, 0.18);
+  border-radius: 14px;
+  background: #fbfffe;
+  box-shadow: 0 30px 90px rgba(17, 19, 22, 0.3);
+  animation: walletModalIn 280ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+@keyframes walletModalIn {
+  from { opacity: 0; transform: translateY(14px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.walletModalClose {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 999px;
+  color: var(--muted);
+  background: transparent;
+  font-size: 1.3rem;
+  cursor: pointer;
+}
+
+.walletModalClose:hover { background: rgba(17, 19, 22, 0.07); }
+
+.walletModalIntro {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 28px 52px 26px 30px;
+  border-bottom: 1px solid rgba(17, 19, 22, 0.1);
+  background: linear-gradient(135deg, rgba(215, 251, 247, 0.62), rgba(255, 255, 255, 0.92));
+}
+
+.walletModalMark,
+.walletOptionIcon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border: 1px solid rgba(8, 127, 122, 0.18);
+  border-radius: 999px;
+  color: var(--teal);
+  background: var(--white);
+  font-family: "IBM Plex Mono", Consolas, monospace;
+  font-weight: 900;
+}
+
+.walletModalMark { width: 52px; height: 52px; font-size: 0.75rem; }
+.walletModalIntro h2 { margin: 0 0 4px; font-size: 1.45rem; }
+.walletModalIntro p { margin: 0; color: var(--muted); font-size: 0.94rem; }
+
+.walletOptions { display: grid; gap: 10px; padding: 24px; }
+
+.walletOption {
+  width: 100%;
+  min-height: 88px;
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid rgba(17, 19, 22, 0.1);
+  border-radius: 14px;
+  padding: 12px 16px;
+  color: var(--ink);
+  background: var(--white);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.walletOption:hover:not(:disabled) {
+  border-color: rgba(8, 127, 122, 0.42);
+  box-shadow: 0 8px 20px rgba(17, 19, 22, 0.07);
+  transform: translateY(-1px);
+}
+
+.walletOption:disabled { cursor: wait; opacity: 0.56; }
+.walletOptionIcon { width: 52px; height: 52px; color: var(--ink); font-size: 1.15rem; }
+.walletOption:nth-child(1) .walletOptionIcon { color: #b96a2b; background: #fff5e9; }
+.walletOption:nth-child(2) .walletOptionIcon { color: #1769e8; background: #edf4ff; }
+.walletOption:nth-child(3) .walletOptionIcon { color: #3889d9; background: #edf7ff; }
+.walletOption:nth-child(4) .walletOptionIcon { color: #5d74df; background: #f0f2ff; }
+.walletOption strong, .walletOption small { display: block; }
+.walletOption strong { margin-bottom: 3px; font-size: 1rem; }
+.walletOption small { color: var(--muted); font-size: 0.86rem; }
+.walletOptionArrow { color: var(--muted); font-size: 1.25rem; }
+.walletDisconnect { border-color: rgba(182, 64, 52, 0.22); }
+.walletDisconnect .walletOptionIcon { color: var(--red); background: rgba(182, 64, 52, 0.08); }
+.walletModalFooter { margin: 0; padding: 18px 24px 24px; border-top: 1px solid rgba(17, 19, 22, 0.08); color: var(--muted); text-align: center; font-size: 0.84rem; }
+
 .walletNotifier strong {
   align-self: end;
   font-size: 0.92rem;
@@ -1652,6 +1765,13 @@ h2 {
   .chainCheckResult {
     grid-template-columns: 1fr;
   }
+
+  .walletModalBackdrop { align-items: end; padding: 0; }
+  .walletModal { border-radius: 16px 16px 0 0; }
+  .walletModalIntro { padding: 24px 48px 22px 22px; }
+  .walletOptions { padding: 18px 14px; }
+  .walletOption { min-height: 78px; grid-template-columns: 48px minmax(0, 1fr) auto; gap: 12px; padding: 10px 12px; }
+  .walletOptionIcon { width: 44px; height: 44px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

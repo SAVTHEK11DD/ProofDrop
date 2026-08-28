@@ -16,7 +16,7 @@ import {
 
 export default function CreateProofPage() {
   const inputRef = useRef(null);
-  const { address, connectWallet } = useWallet();
+  const { address, connectWallet, provider } = useWallet();
   const [record, setRecord] = useState(null);
   const [isDragging, setIsDragging] = useState(false);
   const [isHashing, setIsHashing] = useState(false);
@@ -57,13 +57,11 @@ export default function CreateProofPage() {
     try {
       let from = address;
       if (!from) {
-        await connectWallet();
-        const accounts = await window.ethereum?.request({ method: "eth_accounts" });
-        from = accounts?.[0] || "";
+        from = await connectWallet();
       }
       if (!from) throw new Error("Connect a wallet before anchoring.");
 
-      const transactionHash = await sealHashOnChain(record.hash, from);
+      const transactionHash = await sealHashOnChain(record.hash, from, provider);
       const updated = updateProof(record.id, {
         chain: "sepolia",
         contractAddress: CONTRACT_ADDRESS,

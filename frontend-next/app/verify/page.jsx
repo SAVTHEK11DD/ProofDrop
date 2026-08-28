@@ -10,6 +10,7 @@ import {
   shortAddress,
   verifyHashOnChain,
 } from "../lib/proofs";
+import { useWallet } from "../components/WalletConnect";
 
 export default function VerifyPage() {
   const fileInputRef = useRef(null);
@@ -24,6 +25,7 @@ export default function VerifyPage() {
   const [chainResult, setChainResult] = useState(null);
   const [error, setError] = useState("");
   const [notice, setNotice] = useState("");
+  const { provider } = useWallet();
 
   useEffect(() => {
     setSavedProofs(readProofs());
@@ -105,8 +107,8 @@ export default function VerifyPage() {
     setIsCheckingChain(true);
 
     try {
-      const exists = await verifyHashOnChain(hash);
-      const proof = exists ? await getProofOnChain(hash) : null;
+      const exists = await verifyHashOnChain(hash, provider);
+      const proof = exists ? await getProofOnChain(hash, provider) : null;
       setChainResult({
         exists,
         hash,

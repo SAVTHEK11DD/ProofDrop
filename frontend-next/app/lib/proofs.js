@@ -134,22 +134,22 @@ function encodeHashCall(selector, hash) {
   return `${selector}${normalized}`;
 }
 
-export async function ensureSepolia() {
-  if (!window.ethereum) throw new Error("MetaMask is not installed.");
+export async function ensureSepolia(provider = window.ethereum) {
+  if (!provider) throw new Error("An Ethereum wallet is not connected.");
 
-  const chainId = await window.ethereum.request({ method: "eth_chainId" });
+  const chainId = await provider.request({ method: "eth_chainId" });
   if (chainId === SEPOLIA_CHAIN_ID) return;
 
-  await window.ethereum.request({
+  await provider.request({
     method: "wallet_switchEthereumChain",
     params: [{ chainId: SEPOLIA_CHAIN_ID }],
   });
 }
 
-export async function sealHashOnChain(hash, from) {
-  await ensureSepolia();
+export async function sealHashOnChain(hash, from, provider = window.ethereum) {
+  await ensureSepolia(provider);
 
-  const transactionHash = await window.ethereum.request({
+  const transactionHash = await provider.request({
     method: "eth_sendTransaction",
     params: [
       {
@@ -163,10 +163,10 @@ export async function sealHashOnChain(hash, from) {
   return transactionHash;
 }
 
-export async function verifyHashOnChain(hash) {
-  await ensureSepolia();
+export async function verifyHashOnChain(hash, provider = window.ethereum) {
+  await ensureSepolia(provider);
 
-  const data = await window.ethereum.request({
+  const data = await provider.request({
     method: "eth_call",
     params: [
       {
@@ -180,10 +180,10 @@ export async function verifyHashOnChain(hash) {
   return Boolean(Number.parseInt(data || "0x0", 16));
 }
 
-export async function getProofOnChain(hash) {
-  await ensureSepolia();
+export async function getProofOnChain(hash, provider = window.ethereum) {
+  await ensureSepolia(provider);
 
-  const data = await window.ethereum.request({
+  const data = await provider.request({
     method: "eth_call",
     params: [
       {
