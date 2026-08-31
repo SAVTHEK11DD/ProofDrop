@@ -1,4 +1,4 @@
-export const PROOF_STORAGE_KEY = "proofdrop:proofs";
+export const PROOF_STORAGE_KEY = "proofdrops:proofs";
 export const SEPOLIA_CHAIN_ID = "0xaa36a7";
 export const CONTRACT_ADDRESS = "0xCF5A3d185DF8826788A0208c593ee9925c42Da1a";
 
@@ -54,7 +54,8 @@ export function readProofs() {
   if (typeof window === "undefined") return [];
 
   try {
-    const parsed = JSON.parse(localStorage.getItem(PROOF_STORAGE_KEY) || "[]");
+    const raw = localStorage.getItem(PROOF_STORAGE_KEY) || localStorage.getItem("proofdrop:proofs") || "[]";
+    const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];
   } catch {
     return [];
@@ -63,6 +64,7 @@ export function readProofs() {
 
 export function writeProofs(proofs) {
   localStorage.setItem(PROOF_STORAGE_KEY, JSON.stringify(proofs));
+  window.dispatchEvent(new Event("proofdrops:proofs-updated"));
   window.dispatchEvent(new Event("proofdrop:proofs-updated"));
 }
 

@@ -18,7 +18,7 @@ export default function Home() {
             <span className="brandMark" aria-hidden="true">
               PD
             </span>
-            <span>ProofDrop</span>
+            <span>ProofDrops</span>
             <span className="versionBadge">v0.0.1</span>
           </Link>
           <div className="navLinks">
@@ -36,7 +36,7 @@ export default function Home() {
               Prove a file existed. Verify it has not changed.
             </h1>
             <p className="lede">
-              ProofDrop hashes files locally, anchors the fingerprint on-chain,
+              ProofDrops hashes files locally, anchors the fingerprint on-chain,
               and gives teams a clean way to verify the exact version later
               without uploading the original file.
             </p>
@@ -49,7 +49,7 @@ export default function Home() {
                 Verify a file
               </Link>
             </div>
-            <div className="heroStats" aria-label="ProofDrop trust signals">
+            <div className="heroStats" aria-label="ProofDrops trust signals">
               {heroStats.map(([value, label]) => (
                 <div className="heroStat" key={value}>
                   <strong>{value}</strong>
@@ -59,7 +59,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="productPanel" aria-label="ProofDrop proof preview">
+          <div className="productPanel" aria-label="ProofDrops proof preview">
             <div className="panelHeader">
               <span>
                 <span className="statusDot" aria-hidden="true" />

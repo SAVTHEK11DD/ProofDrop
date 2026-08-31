@@ -5,7 +5,7 @@ export default function Footer({ showButton = true }) {
   return (
     <footer className="footer">
       <div>
-        <strong>ProofDrop</strong>
+        <strong>ProofDrops</strong>
         <p>A blockchain-based proof layer for digital files.</p>
         <SocialLinks className="socialIcons footerSocials" />
       </div>

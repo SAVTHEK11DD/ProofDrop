@@ -82,12 +82,12 @@ export default function ProofFlowPipeline() {
   return (
     <div
       className="pipelineContainer"
-      aria-label="ProofDrop step-by-step verification pipeline"
+      aria-label="ProofDrops step-by-step verification pipeline"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
       <div className="pipelineHeader">
-        <span className="pipelineEyebrow">HOW PROOFDROP WORKS</span>
+        <span className="pipelineEyebrow">HOW PROOFDROPS WORKS</span>
         <span className="pipelineStatus">
           <span className="pipelinePulseDot" />
           Step {activeStep + 1} of {PIPELINE_STEPS.length}:{" "}

@@ -22,10 +22,12 @@ export default function DashboardPage() {
 
     syncProofs();
     window.addEventListener("storage", syncProofs);
+    window.addEventListener("proofdrops:proofs-updated", syncProofs);
     window.addEventListener("proofdrop:proofs-updated", syncProofs);
 
     return () => {
       window.removeEventListener("storage", syncProofs);
+      window.removeEventListener("proofdrops:proofs-updated", syncProofs);
       window.removeEventListener("proofdrop:proofs-updated", syncProofs);
     };
   }, []);
@@ -56,7 +58,7 @@ export default function DashboardPage() {
           <span className="brandMark" aria-hidden="true">
             PD
           </span>
-          <span>ProofDrop</span>
+          <span>ProofDrops</span>
           <span className="versionBadge">v0.0.1</span>
         </Link>
         <SidebarNav />

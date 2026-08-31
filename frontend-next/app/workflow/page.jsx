@@ -11,7 +11,7 @@ const workflow = [
   {
     step: "02",
     title: "Generate the hash",
-    body: "ProofDrop reads the file locally and creates a SHA-256 fingerprint for that exact version.",
+    body: "ProofDrops reads the file locally and creates a SHA-256 fingerprint for that exact version.",
   },
   {
     step: "03",
@@ -34,7 +34,7 @@ export default function WorkflowPage() {
             <span className="brandMark" aria-hidden="true">
               PD
             </span>
-            <span>ProofDrop</span>
+            <span>ProofDrops</span>
             <span className="versionBadge">v0.0.1</span>
           </Link>
           <div className="navLinks">
@@ -49,14 +49,14 @@ export default function WorkflowPage() {
           <p className="eyebrow">How it works</p>
           <h1>From file to verifiable proof in four moves.</h1>
           <p>
-            ProofDrop records a cryptographic commitment, not the document
+            ProofDrops records a cryptographic commitment, not the document
             itself. The proof is useful because even a one-character change
             produces a different hash.
           </p>
         </div>
       </section>
 
-      <section className="section workflowSection" aria-label="ProofDrop workflow">
+      <section className="section workflowSection" aria-label="ProofDrops workflow">
         <div className="workflowGrid">
           {workflow.map((item) => (
             <article className="workflowCard" key={item.step}>

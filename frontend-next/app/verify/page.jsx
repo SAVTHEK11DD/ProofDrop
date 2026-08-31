@@ -88,7 +88,7 @@ export default function VerifyPage() {
         setError("");
         setNotice("Proof JSON loaded");
       } catch {
-        setError("That file is not a valid ProofDrop proof JSON record.");
+        setError("That file is not a valid ProofDrops proof JSON record.");
         setNotice("");
       }
     };
@@ -130,7 +130,7 @@ export default function VerifyPage() {
           <span className="brandMark" aria-hidden="true">
             PD
           </span>
-          <span>ProofDrop</span>
+          <span>ProofDrops</span>
           <span className="versionBadge">v0.0.1</span>
         </Link>
         <SidebarNav />
@@ -142,7 +142,7 @@ export default function VerifyPage() {
             <p className="eyebrow">Verify a file</p>
             <h1 id="verify-title">Compare a file against a known proof.</h1>
             <p>
-              Hash a file locally, then compare it with a ProofDrop proof record
+              Hash a file locally, then compare it with a ProofDrops proof record
               or a pasted SHA-256 fingerprint.
             </p>
           </div>
@@ -233,9 +233,9 @@ export default function VerifyPage() {
               {!result &&
                 "Select a file and provide a proof record to compare fingerprints."}
               {result === "match" &&
-                "The selected file matches the known ProofDrop fingerprint."}
+                "The selected file matches the known ProofDrops fingerprint."}
               {result === "mismatch" &&
-                "The selected file does not match the known ProofDrop fingerprint."}
+                "The selected file does not match the known ProofDrops fingerprint."}
             </p>
             {error && <p className="formError">{error}</p>}
             {notice && <p className="formNotice">{notice}</p>}

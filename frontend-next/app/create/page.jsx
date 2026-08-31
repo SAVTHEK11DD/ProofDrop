@@ -93,9 +93,9 @@ export default function CreateProofPage() {
     const blob = new Blob([proofJson], { type: "application/json" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
-    const baseName = record.file.replace(/\.[^/.]+$/, "") || "proofdrop";
+    const baseName = record.file.replace(/\.[^/.]+$/, "") || "proofdrops";
     link.href = url;
-    link.download = `${baseName}.proofdrop.json`;
+    link.download = `${baseName}.proofdrops.json`;
     document.body.appendChild(link);
     link.click();
     link.remove();
@@ -110,7 +110,7 @@ export default function CreateProofPage() {
           <span className="brandMark" aria-hidden="true">
             PD
           </span>
-          <span>ProofDrop</span>
+          <span>ProofDrops</span>
           <span className="versionBadge">v0.0.1</span>
         </Link>
         <SidebarNav />

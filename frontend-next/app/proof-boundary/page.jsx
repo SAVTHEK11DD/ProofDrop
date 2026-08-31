@@ -30,7 +30,7 @@ export default function ProofBoundaryPage() {
             <span className="brandMark" aria-hidden="true">
               PD
             </span>
-            <span>ProofDrop</span>
+            <span>ProofDrops</span>
             <span className="versionBadge">v0.0.1</span>
           </Link>
           <div className="navLinks">
@@ -43,7 +43,7 @@ export default function ProofBoundaryPage() {
 
         <div className="simplePageIntro">
           <p className="eyebrow">Proof boundary</p>
-          <h1>ProofDrop proves integrity, existence, and provenance.</h1>
+          <h1>ProofDrops proves integrity, existence, and provenance.</h1>
           <p>
             A blockchain record can confirm that a specific hash existed at a
             specific time. It should not be stretched into claims about legal

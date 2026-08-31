@@ -444,7 +444,7 @@ function WalletModal() {
           </span>
           <div>
             <h2 id="wallet-modal-title">{address ? "Wallet connected" : "Connect your wallet"}</h2>
-            <p>{address ? "Manage the wallet used to anchor your proofs." : "Choose a wallet to continue to ProofDrop."}</p>
+            <p>{address ? "Manage the wallet used to anchor your proofs." : "Choose a wallet to continue to ProofDrops."}</p>
           </div>
         </div>
         <div className="walletOptions">
@@ -513,7 +513,7 @@ function WalletModal() {
         )}
         {!address && (
           <p className="walletModalFooter">
-            ProofDrop connects to injected browser wallets and never holds your funds.
+            ProofDrops connects to injected browser wallets and never holds your funds.
           </p>
         )}
       </section>

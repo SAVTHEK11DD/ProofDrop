@@ -1,14 +1,14 @@
-# ProofDrop
+# ProofDrops
 
-ProofDrop is a Web3 file authenticity tool. It proves that a file fingerprint was recorded on-chain without uploading or storing the file itself.
+ProofDrops is a Web3 file authenticity tool. It proves that a file fingerprint was recorded on-chain without uploading or storing the file itself.
 
-In v1, a user selects a file, ProofDrop calculates the file's SHA-256 hash in the browser, and the user can seal that hash on the Sepolia testnet through MetaMask. Later, anyone can hash the same file again and check whether that hash exists in the deployed smart contract.
+In v1, a user selects a file, ProofDrops calculates the file's SHA-256 hash in the browser, and the user can seal that hash on the Sepolia testnet through MetaMask. Later, anyone can hash the same file again and check whether that hash exists in the deployed smart contract.
 
 ## What It Does
 
 - Hashes files locally in the browser with SHA-256.
 - Never uploads the original file.
-- Lets users download a local `.proofdrop.json` proof record.
+- Lets users download a local `.proofdrops.json` proof record.
 - Stores only the file hash on an Ethereum-compatible blockchain.
 - Lets users verify whether a file matches a local proof record.
 - Lets users verify whether a file hash exists on Sepolia.
@@ -16,7 +16,7 @@ In v1, a user selects a file, ProofDrop calculates the file's SHA-256 hash in th
 
 ## How The Stack Works
 
-ProofDrop uses a Next.js frontend and a Solidity smart contract. File hashing stays in the browser, while only the resulting hash is sent to the blockchain.
+ProofDrops uses a Next.js frontend and a Solidity smart contract. File hashing stays in the browser, while only the resulting hash is sent to the blockchain.
 
 | Layer | Tech | Role |
 | --- | --- | --- |
@@ -35,12 +35,12 @@ ProofDrop uses a Next.js frontend and a Solidity smart contract. File hashing st
 1. Open the Seal page.
 2. Connect MetaMask on Sepolia.
 3. Select a file.
-4. ProofDrop hashes the file locally with SHA-256.
+4. ProofDrops hashes the file locally with SHA-256.
 5. Click `Seal on Sepolia`.
 6. MetaMask asks the user to confirm the transaction.
 7. The smart contract stores the hash, sender address, and block timestamp.
 8. Later, open the Verify page and select the same file.
-9. ProofDrop hashes the file again and checks whether that hash exists on-chain.
+9. ProofDrops hashes the file again and checks whether that hash exists on-chain.
 
 ## What Is Stored On-Chain
 
