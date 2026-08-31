@@ -6,6 +6,11 @@ export const metadata = {
   title: "ProofDrop - Blockchain proof for digital files",
   description:
     "Create tamper-evident, independently verifiable records for digital files without uploading the file itself.",
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
 };
 
 export default function RootLayout({ children }) {
