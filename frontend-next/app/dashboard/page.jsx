@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { readProofs, shortHash } from "../lib/proofs";
 import { WalletConnectButton } from "../components/WalletConnect";
+import SidebarNav from "../components/SidebarNav";
 
 const statusOptions = ["All", "Verified", "Local"];
 const networkOptions = ["All", "Sepolia", "Local"];
@@ -57,13 +58,7 @@ export default function DashboardPage() {
           </span>
           <span>ProofDrop</span>
         </Link>
-        <nav className="sideNav">
-          <Link className="active" href="/dashboard">
-            Dashboard
-          </Link>
-          <Link href="/create">Create proof</Link>
-          <Link href="/verify">Verify file</Link>
-        </nav>
+        <SidebarNav />
       </aside>
 
       <section className="dashboardView" aria-labelledby="dashboard-title">

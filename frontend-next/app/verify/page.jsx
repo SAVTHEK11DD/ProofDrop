@@ -11,6 +11,7 @@ import {
   verifyHashOnChain,
 } from "../lib/proofs";
 import { useWallet, WalletConnectButton } from "../components/WalletConnect";
+import SidebarNav from "../components/SidebarNav";
 
 export default function VerifyPage() {
   const fileInputRef = useRef(null);
@@ -131,13 +132,7 @@ export default function VerifyPage() {
           </span>
           <span>ProofDrop</span>
         </Link>
-        <nav className="sideNav">
-          <Link href="/dashboard">Dashboard</Link>
-          <Link href="/create">Create proof</Link>
-          <Link className="active" href="/verify">
-            Verify file
-          </Link>
-        </nav>
+        <SidebarNav />
       </aside>
 
       <section className="dashboardView" aria-labelledby="verify-title">

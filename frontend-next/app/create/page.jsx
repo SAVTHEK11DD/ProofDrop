@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
 import { useWallet, WalletConnectButton } from "../components/WalletConnect";
+import SidebarNav from "../components/SidebarNav";
 import {
   CONTRACT_ADDRESS,
   createProofRecord,
@@ -111,13 +112,7 @@ export default function CreateProofPage() {
           </span>
           <span>ProofDrop</span>
         </Link>
-        <nav className="sideNav">
-          <Link href="/dashboard">Dashboard</Link>
-          <Link className="active" href="/create">
-            Create proof
-          </Link>
-          <Link href="/verify">Verify file</Link>
-        </nav>
+        <SidebarNav />
       </aside>
 
       <section className="dashboardView" aria-labelledby="create-title">

@@ -1101,10 +1101,26 @@ h2 {
   min-height: 42px;
   display: flex;
   align-items: center;
+  gap: 12px;
   border-radius: 8px;
-  padding: 0 12px;
+  padding: 0 14px;
   color: #c9c3b7;
   font-weight: 720;
+  font-size: 0.92rem;
+  transition: background 150ms ease, color 150ms ease, transform 150ms ease;
+}
+
+.sideNavIcon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  color: currentColor;
+}
+
+.sideNavLabel {
+  white-space: nowrap;
 }
 
 .sideNav a:hover,
@@ -1757,9 +1773,28 @@ h2 {
 
 @media (max-width: 900px) {
   .nav {
-    align-items: flex-start;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
     flex-wrap: wrap;
-    padding-bottom: 14px;
+    padding: 12px 0;
+    gap: 12px;
+  }
+
+  .nav > .brand {
+    flex: 0 0 auto;
+  }
+
+  .navAction {
+    width: 130px;
+    min-width: 130px;
+    max-width: 130px;
+    height: 36px;
+    min-height: 36px;
+    max-height: 36px;
+    margin-left: auto;
+    font-size: 0.82rem;
+    padding: 0 8px;
   }
 
   .navLinks {
@@ -1767,6 +1802,7 @@ h2 {
     width: 100%;
     gap: 18px;
     overflow-x: auto;
+    padding-top: 4px;
   }
 
   .heroGrid,
@@ -1793,15 +1829,15 @@ h2 {
   }
 
   .appFrame {
-    grid-template-columns: 104px minmax(0, 1fr);
+    grid-template-columns: 78px minmax(0, 1fr);
   }
 
   .appSidebar {
     position: sticky;
     top: 0;
     height: 100vh;
-    padding: 16px 10px;
-    gap: 18px;
+    padding: 14px 6px;
+    gap: 14px;
   }
 
   .appSidebar .brand {
@@ -1814,16 +1850,31 @@ h2 {
 
   .sideNav {
     grid-template-columns: 1fr;
-    gap: 10px;
+    gap: 6px;
   }
 
   .sideNav a {
-    min-height: 58px;
+    min-height: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
-    padding: 8px;
+    gap: 3px;
+    padding: 5px 3px;
     text-align: center;
-    font-size: 0.78rem;
-    line-height: 1.15;
+    font-size: 0.66rem;
+    line-height: 1.1;
+    border-radius: 6px;
+  }
+
+  .sideNavIcon {
+    width: 16px;
+    height: 16px;
+  }
+
+  .sideNavIcon svg {
+    width: 16px;
+    height: 16px;
   }
 
   .sideNav a:hover {
@@ -1892,7 +1943,15 @@ h2 {
   }
 
   .navAction {
-    width: 100%;
+    width: 124px;
+    min-width: 124px;
+    max-width: 124px;
+    height: 34px;
+    min-height: 34px;
+    max-height: 34px;
+    font-size: 0.78rem;
+    padding: 0 6px;
+    margin-left: auto;
   }
 
   .button {
@@ -1928,16 +1987,18 @@ h2 {
   }
 
   .appFrame {
-    grid-template-columns: 82px minmax(0, 1fr);
+    grid-template-columns: 68px minmax(0, 1fr);
   }
 
   .appSidebar {
-    padding: 12px 8px;
+    padding: 10px 4px;
+    gap: 10px;
   }
 
   .brandMark {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
+    font-size: 0.75rem;
   }
 
   .metricGrid {
@@ -1945,8 +2006,21 @@ h2 {
   }
 
   .sideNav a {
-    min-height: 52px;
-    font-size: 0.72rem;
+    min-height: 36px;
+    font-size: 0.62rem;
+    padding: 4px 2px;
+    gap: 2px;
+    border-radius: 6px;
+  }
+
+  .sideNavIcon {
+    width: 15px;
+    height: 15px;
+  }
+
+  .sideNavIcon svg {
+    width: 15px;
+    height: 15px;
   }
 
   .dashboardHeader h1 {
