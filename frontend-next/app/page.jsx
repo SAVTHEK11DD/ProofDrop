@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { WalletConnectButton } from "./components/WalletConnect";
 import ProofFlowPipeline from "./components/ProofFlowPipeline";
+import Footer from "./components/Footer";
 
 const heroStats = [
   ["0 bytes", "of file data stored on-chain"],
@@ -106,15 +107,7 @@ export default function Home() {
         <ProofFlowPipeline />
       </section>
 
-      <footer className="footer">
-        <div>
-          <strong>ProofDrop</strong>
-          <p>A blockchain-based proof layer for digital files.</p>
-        </div>
-        <Link className="button buttonPrimary" href="/create">
-          Start with a file
-        </Link>
-      </footer>
+      <Footer />
     </main>
   );
 }

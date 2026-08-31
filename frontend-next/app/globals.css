@@ -730,7 +730,7 @@ h1 {
   opacity: 1;
   background: linear-gradient(90deg, var(--teal), #5eead4);
   box-shadow: 0 0 6px rgba(8, 127, 122, 0.6);
-  animation: beamShootHorizontal 1.4s ease-in-out infinite;
+  animation: beamShootHorizontal 0.8s ease-in-out infinite;
 }
 
 .pipelineConnector.completed .connectorTrack {
@@ -756,7 +756,7 @@ h1 {
 
 .pipelineConnector.transmitting .connectorArrow {
   color: var(--teal);
-  animation: arrowNudgeHorizontal 1.4s ease-in-out infinite;
+  animation: arrowNudgeHorizontal 0.8s ease-in-out infinite;
 }
 
 .pipelineConnector.completed .connectorArrow {
@@ -875,7 +875,7 @@ h1 {
 
   .pipelineConnector.transmitting .connectorBeam {
     background: linear-gradient(180deg, var(--teal), #5eead4);
-    animation: beamShootVertical 1.4s ease-in-out infinite;
+    animation: beamShootVertical 0.8s ease-in-out infinite;
   }
 
   .connectorArrow {
@@ -1152,6 +1152,91 @@ h2 {
 
 .footer p {
   margin-bottom: 0;
+  color: var(--muted);
+}
+
+.footerSocials {
+  margin-top: 14px;
+}
+
+.socialIcons {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.socialIconLink {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 9px;
+  border: 1px solid var(--line);
+  background: #ffffff;
+  color: #4b5563;
+  transition: transform 160ms ease, color 160ms ease, border-color 160ms ease, background 160ms ease, box-shadow 160ms ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.socialIconLink:hover {
+  transform: translateY(-2px);
+  color: var(--teal);
+  border-color: rgba(8, 127, 122, 0.38);
+  background: rgba(215, 251, 247, 0.22);
+  box-shadow: 0 4px 12px rgba(8, 127, 122, 0.12);
+}
+
+.socialIconLink:active {
+  transform: translateY(0) scale(0.96);
+}
+
+/* Sidebar Socials */
+.sidebarFooter {
+  margin-top: auto;
+  padding-top: 14px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebarSocials {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 8px;
+}
+
+.appSidebar .socialIconLink {
+  width: 32px;
+  height: 32px;
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #c9c3b7;
+  box-shadow: none;
+}
+
+.appSidebar .socialIconLink:hover {
+  background: rgba(8, 127, 122, 0.24);
+  border-color: rgba(215, 251, 247, 0.3);
+  color: #d7fbf7;
+  transform: translateY(-1px);
+}
+
+@media (max-width: 900px) {
+  .sidebarSocials {
+    flex-direction: column;
+    justify-content: center;
+  }
+}
+
+/* Dashboard View Footer */
+.dashboardViewFooter {
+  margin-top: 36px;
+  padding: 16px 0 6px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--line);
+  font-size: 0.82rem;
   color: var(--muted);
 }
 

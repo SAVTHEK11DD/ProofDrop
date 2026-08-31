@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { WalletConnectButton } from "../components/WalletConnect";
+import Footer from "../components/Footer";
 
 const workflow = [
   {
@@ -66,6 +67,8 @@ export default function WorkflowPage() {
           ))}
         </div>
       </section>
+
+      <Footer />
     </main>
   );
 }

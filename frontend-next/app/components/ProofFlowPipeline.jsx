@@ -69,8 +69,8 @@ export default function ProofFlowPipeline() {
   useEffect(() => {
     if (isPaused) return;
 
-    // Cycle through steps: 2.2s for normal steps, 3s on final "Verify" step
-    const delay = activeStep === PIPELINE_STEPS.length - 1 ? 3000 : 2200;
+    // Faster transition speed: 1.2s per step, 1.8s on final "Verify" step
+    const delay = activeStep === PIPELINE_STEPS.length - 1 ? 1800 : 1200;
 
     const timer = setTimeout(() => {
       setActiveStep((prev) => (prev + 1) % PIPELINE_STEPS.length);

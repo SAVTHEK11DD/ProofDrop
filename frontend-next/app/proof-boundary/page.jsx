@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { WalletConnectButton } from "../components/WalletConnect";
+import Footer from "../components/Footer";
 
 const proofBoundaries = [
   {
@@ -65,6 +66,8 @@ export default function ProofBoundaryPage() {
           ))}
         </div>
       </section>
+
+      <Footer />
     </main>
   );
 }

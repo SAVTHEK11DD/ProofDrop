@@ -40,27 +40,34 @@ const NAV_ITEMS = [
   },
 ];
 
+import SocialLinks from "./SocialLinks";
+
 export default function SidebarNav() {
   const pathname = usePathname();
 
   return (
-    <nav className="sideNav" aria-label="Sidebar navigation">
-      {NAV_ITEMS.map(({ href, label, icon }) => {
-        const isActive = pathname === href;
-        return (
-          <Link
-            key={href}
-            className={isActive ? "active" : ""}
-            href={href}
-            aria-current={isActive ? "page" : undefined}
-          >
-            <span className="sideNavIcon" aria-hidden="true">
-              {icon}
-            </span>
-            <span className="sideNavLabel">{label}</span>
-          </Link>
-        );
-      })}
-    </nav>
+    <>
+      <nav className="sideNav" aria-label="Sidebar navigation">
+        {NAV_ITEMS.map(({ href, label, icon }) => {
+          const isActive = pathname === href;
+          return (
+            <Link
+              key={href}
+              className={isActive ? "active" : ""}
+              href={href}
+              aria-current={isActive ? "page" : undefined}
+            >
+              <span className="sideNavIcon" aria-hidden="true">
+                {icon}
+              </span>
+              <span className="sideNavLabel">{label}</span>
+            </Link>
+          );
+        })}
+      </nav>
+      <div className="sidebarFooter">
+        <SocialLinks className="sidebarSocials" size={17} />
+      </div>
+    </>
   );
 }
