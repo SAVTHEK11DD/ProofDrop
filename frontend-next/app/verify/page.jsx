@@ -147,12 +147,6 @@ export default function VerifyPage() {
             </p>
           </div>
           <div className="headerActions">
-            <Link className="button buttonSecondary" href="/dashboard">
-              Dashboard
-            </Link>
-            <Link className="button buttonPrimary" href="/create">
-              Create proof
-            </Link>
             <WalletConnectButton className="button buttonSecondary" />
           </div>
         </header>

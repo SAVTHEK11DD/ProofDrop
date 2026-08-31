@@ -127,12 +127,6 @@ export default function CreateProofPage() {
             </p>
           </div>
           <div className="headerActions">
-            <Link className="button buttonSecondary" href="/dashboard">
-              Dashboard
-            </Link>
-            <Link className="button buttonPrimary" href="/verify">
-              Verify
-            </Link>
             <WalletConnectButton className="button buttonSecondary" />
           </div>
         </header>

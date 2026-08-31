@@ -73,12 +73,6 @@ export default function DashboardPage() {
             </p>
           </div>
           <div className="headerActions">
-            <Link className="button buttonSecondary" href="/verify">
-              Verify
-            </Link>
-            <Link className="button buttonPrimary" href="/create">
-              Create proof
-            </Link>
             <WalletConnectButton className="button buttonSecondary" />
           </div>
         </header>
