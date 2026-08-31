@@ -63,27 +63,58 @@ const WalletMarkIcon = () => (
   </svg>
 );
 
+function getDeviceInfo() {
+  if (typeof window === "undefined" || !navigator) {
+    return { isMobile: false, os: "desktop" };
+  }
+
+  const ua = navigator.userAgent || navigator.vendor || window.opera || "";
+  const isIOS =
+    /iPad|iPhone|iPod/.test(ua) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const isAndroid = /android/i.test(ua);
+  const isMobile = isIOS || isAndroid || /Mobi|Tablet|Opera Mini/i.test(ua);
+
+  let os = "desktop";
+  if (isIOS) os = "ios";
+  else if (isAndroid) os = "android";
+
+  return { isMobile, os };
+}
+
 const WALLET_OPTIONS = [
   {
     id: "metamask",
     name: "MetaMask",
-    description: "Most popular browser wallet",
+    description: "Most popular crypto wallet",
     icon: <MetaMaskIcon />,
-    installUrl: "https://metamask.io/download/",
+    desktopUrl: "https://metamask.io/download/",
+    appStoreUrl: "https://apps.apple.com/app/metamask-blockchain-wallet/id1438144202",
+    playStoreUrl: "https://play.google.com/store/apps/details?id=io.metamask",
+    deepLink: (url) => {
+      const cleanUrl = url.replace(/^https?:\/\//, "");
+      return `https://metamask.app.link/dapp/${cleanUrl}`;
+    },
   },
   {
     id: "coinbase",
     name: "Coinbase Wallet",
-    description: "Self custody wallet by Coinbase",
+    description: "Self-custody wallet by Coinbase",
     icon: <CoinbaseIcon />,
-    installUrl: "https://www.coinbase.com/wallet",
+    desktopUrl: "https://www.coinbase.com/wallet",
+    appStoreUrl: "https://apps.apple.com/app/coinbase-wallet-nfts-crypto/id1278383455",
+    playStoreUrl: "https://play.google.com/store/apps/details?id=org.toshi",
+    deepLink: (url) => `https://go.cb-w.com/dapp?cb_url=${encodeURIComponent(url)}`,
   },
   {
     id: "rabby",
     name: "Rabby Wallet",
     description: "Smart wallet for DeFi power users",
     icon: <RabbyIcon />,
-    installUrl: "https://rabby.io/",
+    desktopUrl: "https://rabby.io/",
+    appStoreUrl: "https://apps.apple.com/app/rabby-wallet-crypto-defi/id6474381473",
+    playStoreUrl: "https://play.google.com/store/apps/details?id=com.debank.rabbymobile",
+    deepLink: null,
   },
 ];
 
@@ -160,8 +191,7 @@ function getSpecificWalletProvider(walletId, walletChoices = []) {
 export function WalletProvider({ children }) {
   const [address, setAddress] = useState("");
   const [message, setMessage] = useState("Wallet not connected");
-  const [modalError, setModalError] = useState("");
-  const [errorWalletId, setErrorWalletId] = useState("");
+  const [modalNotice, setModalNotice] = useState(null);
   const [isWalletModalOpen, setWalletModalOpen] = useState(false);
   const [walletChoices, setWalletChoices] = useState([]);
   const [selectedWallet, setSelectedWallet] = useState("");
@@ -190,36 +220,79 @@ export function WalletProvider({ children }) {
   }, []);
 
   function openWalletModal() {
-    setModalError("");
-    setErrorWalletId("");
+    setModalNotice(null);
     setWalletModalOpen(true);
   }
 
   function closeWalletModal() {
     setWalletModalOpen(false);
     setSelectedWallet("");
-    setModalError("");
-    setErrorWalletId("");
+    setModalNotice(null);
   }
 
   async function connectWallet(walletId = "metamask") {
     const option = WALLET_OPTIONS.find((item) => item.id === walletId);
     if (!option) return;
     setSelectedWallet(walletId);
-    setModalError("");
-    setErrorWalletId("");
+    setModalNotice(null);
 
-    try {
-      setMessage("Opening wallet");
-      const provider = getSpecificWalletProvider(walletId, walletChoices);
+    const { isMobile, os } = getDeviceInfo();
+    const provider = getSpecificWalletProvider(walletId, walletChoices);
 
-      if (!provider) {
-        setModalError(`${option.name} was not detected in this browser.`);
-        setErrorWalletId(walletId);
-        setSelectedWallet("");
-        return;
+    // Mobile without injected Web3 provider (e.g. mobile Safari / Chrome)
+    if (isMobile && !provider) {
+      setSelectedWallet("");
+      const currentUrl = typeof window !== "undefined" ? window.location.href : "http://localhost:3000";
+      const deepLink = option.deepLink ? option.deepLink(currentUrl) : null;
+
+      let storeUrl = option.desktopUrl;
+      let storeLabel = "Download app";
+
+      if (os === "ios") {
+        storeUrl = option.appStoreUrl;
+        storeLabel = "Download on App Store";
+      } else if (os === "android") {
+        storeUrl = option.playStoreUrl;
+        storeLabel = "Download on Google Play";
       }
 
+      setModalNotice({
+        type: "mobile",
+        walletId: option.id,
+        walletName: option.name,
+        message: deepLink
+          ? `Dispatched connection request to ${option.name} mobile app. If the app is not installed, download it below.`
+          : `${option.name} mobile app is required. Download it from the store below.`,
+        deepLink,
+        storeUrl,
+        storeLabel,
+      });
+
+      // Dispatch request to the mobile wallet app via deep link
+      if (deepLink) {
+        window.location.href = deepLink;
+      }
+      return;
+    }
+
+    // Desktop without extension installed
+    if (!provider) {
+      setSelectedWallet("");
+      setModalNotice({
+        type: "desktop",
+        walletId: option.id,
+        walletName: option.name,
+        message: `${option.name} extension was not detected in this browser.`,
+        deepLink: null,
+        storeUrl: option.desktopUrl,
+        storeLabel: `Install ${option.name} extension`,
+      });
+      return;
+    }
+
+    // Provider is available (desktop extension or mobile in-app browser)
+    try {
+      setMessage("Opening wallet");
       setActiveProvider(provider);
       provider.on?.("accountsChanged", (accounts) => {
         setAddress(accounts?.[0] || "");
@@ -237,7 +310,6 @@ export function WalletProvider({ children }) {
         if (permError?.code === 4001 || permError?.message?.toLowerCase().includes("user rejected")) {
           throw permError;
         }
-        // If wallet_requestPermissions is not supported by the wallet, continue to eth_requestAccounts
       }
 
       const accounts = await provider.request({ method: "eth_requestAccounts" });
@@ -247,8 +319,15 @@ export function WalletProvider({ children }) {
       closeWalletModal();
       return accounts?.[0] || "";
     } catch (error) {
-      setModalError(error?.message || "Connection cancelled");
-      setErrorWalletId(walletId);
+      setModalNotice({
+        type: "error",
+        walletId: option.id,
+        walletName: option.name,
+        message: error?.message || "Connection cancelled",
+        deepLink: null,
+        storeUrl: null,
+        storeLabel: null,
+      });
       setMessage(error?.message || "Connection cancelled");
       setSelectedWallet("");
     }
@@ -284,8 +363,7 @@ export function WalletProvider({ children }) {
       disconnectWallet,
       displayAddress: address ? shortAddress(address) : "",
       message,
-      modalError,
-      errorWalletId,
+      modalNotice,
       isWalletModalOpen,
       openWalletModal,
       closeWalletModal,
@@ -293,7 +371,7 @@ export function WalletProvider({ children }) {
       walletChoices,
       provider: activeProvider,
     }),
-    [address, message, modalError, errorWalletId, isWalletModalOpen, selectedWallet, walletChoices, activeProvider]
+    [address, message, modalNotice, isWalletModalOpen, selectedWallet, walletChoices, activeProvider]
   );
 
   return (
@@ -343,13 +421,10 @@ function WalletModal() {
     disconnectWallet,
     isWalletModalOpen,
     selectedWallet,
-    modalError,
-    errorWalletId,
+    modalNotice,
   } = useWallet();
 
   if (!isWalletModalOpen) return null;
-
-  const errorOption = WALLET_OPTIONS.find((item) => item.id === errorWalletId);
 
   return (
     <div className="walletModalBackdrop" onMouseDown={closeWalletModal} role="presentation">
@@ -407,19 +482,33 @@ function WalletModal() {
             ))
           )}
         </div>
-        {modalError && (
-          <div className="walletModalError">
-            <span>{modalError}</span>
-            {errorOption?.installUrl && (
-              <a
-                className="walletInstallLink"
-                href={errorOption.installUrl}
-                rel="noopener noreferrer"
-                target="_blank"
-              >
-                Install {errorOption.name} &rarr;
-              </a>
-            )}
+        {modalNotice && (
+          <div className={`walletModalNotice ${modalNotice.type === "error" ? "walletNoticeError" : ""}`}>
+            <span className="walletNoticeText">{modalNotice.message}</span>
+            <div className="walletNoticeActions">
+              {modalNotice.deepLink && (
+                <a
+                  className="walletActionBtn walletActionPrimary"
+                  href={modalNotice.deepLink}
+                >
+                  <svg viewBox="0 0 20 20" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="5" y="2" width="10" height="16" rx="2" />
+                    <path d="M9 15h2" />
+                  </svg>
+                  Open in {modalNotice.walletName}
+                </a>
+              )}
+              {modalNotice.storeUrl && (
+                <a
+                  className="walletActionBtn walletActionSecondary"
+                  href={modalNotice.storeUrl}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  {modalNotice.storeLabel} &rarr;
+                </a>
+              )}
+            </div>
           </div>
         )}
         {!address && (
