@@ -30,6 +30,7 @@ export default function ProofBoundaryPage() {
               PD
             </span>
             <span>ProofDrop</span>
+            <span className="versionBadge">v0.0.1</span>
           </Link>
           <div className="navLinks">
             <Link href="/dashboard">Dashboard</Link>

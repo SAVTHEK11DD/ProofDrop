@@ -117,6 +117,26 @@ code {
   letter-spacing: 0;
 }
 
+.versionBadge {
+  font-family: "IBM Plex Mono", Consolas, monospace;
+  font-size: 0.68rem;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 6px;
+  border: 1px solid rgba(8, 127, 122, 0.28);
+  background: rgba(8, 127, 122, 0.08);
+  color: var(--teal);
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  align-self: center;
+}
+
+.appSidebar .versionBadge {
+  border-color: rgba(215, 251, 247, 0.22);
+  background: rgba(215, 251, 247, 0.08);
+  color: #7cebe0;
+}
+
 .navLinks {
   gap: 28px;
   color: var(--muted);
@@ -1844,7 +1864,7 @@ h2 {
     justify-content: center;
   }
 
-  .appSidebar .brand span:last-child {
+  .appSidebar .brand span:not(.brandMark) {
     display: none;
   }
 

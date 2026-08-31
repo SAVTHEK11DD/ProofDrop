@@ -57,6 +57,7 @@ export default function DashboardPage() {
             PD
           </span>
           <span>ProofDrop</span>
+          <span className="versionBadge">v0.0.1</span>
         </Link>
         <SidebarNav />
       </aside>
