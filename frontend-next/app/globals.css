@@ -502,103 +502,404 @@ h1 {
   color: var(--green);
 }
 
-.proofRailMarquee {
+/* ProofFlow Pipeline Styles */
+.pipelineContainer {
   width: min(1180px, 100%);
-  margin: 32px auto 0;
-  overflow: hidden;
-  position: relative;
-  padding: 6px 0 12px;
-  mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    black 6%,
-    black 94%,
-    transparent 100%
-  );
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent 0%,
-    black 6%,
-    black 94%,
-    transparent 100%
-  );
+  margin: 34px auto 0;
+  padding: 20px 24px;
+  background: rgba(255, 255, 255, 0.76);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
 }
 
-.proofRailTrack {
+.pipelineHeader {
   display: flex;
-  width: max-content;
-  animation: scrollLeftToRight 30s linear infinite;
-  will-change: transform;
-}
-
-.proofRailTrack:hover {
-  animation-play-state: paused;
-}
-
-.proofRailHalf {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-shrink: 0;
-  padding-right: 12px;
-}
-
-.railItem {
-  min-width: 175px;
-  display: inline-flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
-  border: 1px solid var(--line);
-  border-radius: 9px;
-  padding: 12px 18px;
-  background: rgba(255, 255, 255, 0.76);
-  backdrop-filter: blur(8px);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
-  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
-  user-select: none;
-  flex-shrink: 0;
+  gap: 16px;
+  margin-bottom: 18px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.railItem:hover {
-  border-color: rgba(8, 127, 122, 0.4);
-  background: rgba(255, 255, 255, 0.94);
-  box-shadow: 0 4px 14px rgba(8, 127, 122, 0.12);
+.pipelineEyebrow {
+  font-family: "IBM Plex Mono", Consolas, monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.08em;
+}
+
+.pipelineStatus {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--ink);
+}
+
+.pipelinePulseDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--teal);
+  box-shadow: 0 0 0 3px rgba(8, 127, 122, 0.2);
+  animation: pulseDot 1.6s ease-in-out infinite;
+}
+
+@keyframes pulseDot {
+  0%, 100% {
+    transform: scale(0.9);
+    box-shadow: 0 0 0 2px rgba(8, 127, 122, 0.15);
+  }
+  50% {
+    transform: scale(1.15);
+    box-shadow: 0 0 0 5px rgba(8, 127, 122, 0.3);
+  }
+}
+
+.pipelineFlow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.pipelineStepWrapper {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.pipelineStepWrapper:last-child {
+  flex: 0 0 auto;
+}
+
+.pipelineStepCard {
+  position: relative;
+  flex: 1;
+  min-width: 145px;
+  min-height: 86px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: #ffffff;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 220ms ease, box-shadow 220ms ease, background 220ms ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+}
+
+.pipelineStepCard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(8, 127, 122, 0.34);
+  box-shadow: 0 4px 12px rgba(8, 127, 122, 0.08);
+}
+
+.pipelineStepCard.active {
+  border-color: var(--teal);
+  background: #f3fbf9;
+  box-shadow: 0 4px 16px rgba(8, 127, 122, 0.16);
   transform: translateY(-2px);
 }
 
-.railNumber {
-  color: var(--teal);
-  font-family: "IBM Plex Mono", Consolas, monospace;
-  font-size: 0.8rem;
-  font-weight: 700;
+.pipelineStepCard.completed {
+  border-color: rgba(8, 127, 122, 0.28);
+  background: rgba(255, 255, 255, 0.95);
 }
 
-.railItem strong {
+.stepCardTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.stepNum {
+  font-family: "IBM Plex Mono", Consolas, monospace;
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #92999b;
+  transition: color 200ms ease;
+}
+
+.pipelineStepCard.active .stepNum,
+.pipelineStepCard.completed .stepNum {
+  color: var(--teal);
+}
+
+.stepIcon {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.04);
+  color: #717779;
+  transition: all 200ms ease;
+}
+
+.pipelineStepCard.active .stepIcon {
+  background: rgba(8, 127, 122, 0.14);
+  color: var(--teal);
+  transform: scale(1.06);
+}
+
+.pipelineStepCard.completed .stepIcon {
+  background: rgba(8, 127, 122, 0.08);
+  color: var(--teal);
+}
+
+.stepCardBottom {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stepTitle {
+  font-size: 0.88rem;
+  font-weight: 760;
   color: var(--ink);
-  font-size: 0.92rem;
-  font-weight: 750;
   white-space: nowrap;
 }
 
-.railArrow {
+.stepDesc {
+  font-size: 0.71rem;
+  color: var(--muted);
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.stepActiveGlow {
+  position: absolute;
+  bottom: 0;
+  left: 12%;
+  right: 12%;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: var(--teal);
+  box-shadow: 0 0 8px var(--teal);
+}
+
+/* Connector Beam (Horizontal on Desktop) */
+.pipelineConnector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 28px;
+  min-width: 28px;
+  height: 16px;
+  margin: 0 4px;
+}
+
+.connectorTrack {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(0, 0, 0, 0.08);
+  transform: translateY(-50%);
+  border-radius: 2px;
+  transition: background 260ms ease;
+}
+
+.connectorBeam {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  transform: translateY(-50%);
+  opacity: 0;
+  border-radius: 2px;
+  transition: opacity 200ms ease;
+}
+
+.pipelineConnector.transmitting .connectorBeam {
+  opacity: 1;
+  background: linear-gradient(90deg, var(--teal), #5eead4);
+  box-shadow: 0 0 6px rgba(8, 127, 122, 0.6);
+  animation: beamShootHorizontal 1.4s ease-in-out infinite;
+}
+
+.pipelineConnector.completed .connectorTrack {
+  background: rgba(8, 127, 122, 0.4);
+}
+
+.connectorArrow {
+  position: relative;
+  z-index: 2;
+  color: #a0a6a8;
   display: grid;
   place-items: center;
-  color: #9da3a6;
-  transition: color 150ms ease, transform 150ms ease;
+  transition: color 200ms ease;
 }
 
-.railItem:hover .railArrow {
+.arrowHorizontal {
+  display: block;
+}
+
+.arrowVertical {
+  display: none;
+}
+
+.pipelineConnector.transmitting .connectorArrow {
   color: var(--teal);
-  transform: translateX(2px);
+  animation: arrowNudgeHorizontal 1.4s ease-in-out infinite;
 }
 
-@keyframes scrollLeftToRight {
+.pipelineConnector.completed .connectorArrow {
+  color: var(--teal);
+}
+
+@keyframes beamShootHorizontal {
   0% {
-    transform: translateX(-50%);
+    clip-path: inset(0 100% 0 0);
+  }
+  50% {
+    clip-path: inset(0 0 0 0);
   }
   100% {
-    transform: translateX(0%);
+    clip-path: inset(0 0 0 100%);
+  }
+}
+
+@keyframes arrowNudgeHorizontal {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(3px);
+  }
+}
+
+/* Mobile Responsive Pipeline */
+@media (max-width: 820px) {
+  .pipelineContainer {
+    padding: 16px 14px;
+    margin-top: 24px;
+  }
+
+  .pipelineHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  .pipelineFlow {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .pipelineStepWrapper {
+    flex-direction: column;
+    width: 100%;
+    flex: none;
+  }
+
+  .pipelineStepWrapper:last-child {
+    flex: none;
+  }
+
+  .pipelineStepCard {
+    width: 100%;
+    min-height: 58px;
+    padding: 10px 14px;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 14px;
+  }
+
+  .stepCardTop {
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .stepCardBottom {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .stepActiveGlow {
+    top: 10%;
+    bottom: 10%;
+    left: 0;
+    right: auto;
+    width: 3px;
+    height: 80%;
+    border-radius: 0 3px 3px 0;
+  }
+
+  .pipelineConnector {
+    width: 100%;
+    height: 18px;
+    min-height: 18px;
+    margin: 0;
+    padding-left: 26px;
+    justify-content: flex-start;
+  }
+
+  .connectorTrack {
+    top: 0;
+    bottom: 0;
+    left: 38px;
+    right: auto;
+    width: 2px;
+    height: 100%;
+    transform: none;
+  }
+
+  .connectorBeam {
+    top: 0;
+    bottom: 0;
+    left: 38px;
+    right: auto;
+    width: 2px;
+    height: 100%;
+    transform: none;
+  }
+
+  .pipelineConnector.transmitting .connectorBeam {
+    background: linear-gradient(180deg, var(--teal), #5eead4);
+    animation: beamShootVertical 1.4s ease-in-out infinite;
+  }
+
+  .connectorArrow {
+    margin-left: 6px;
+  }
+
+  .arrowHorizontal {
+    display: none;
+  }
+
+  .arrowVertical {
+    display: block;
+  }
+
+  @keyframes beamShootVertical {
+    0% {
+      clip-path: inset(0 0 100% 0);
+    }
+    50% {
+      clip-path: inset(0 0 0 0);
+    }
+    100% {
+      clip-path: inset(100% 0 0 0);
+    }
   }
 }
 
