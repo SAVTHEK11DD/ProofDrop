@@ -10,7 +10,7 @@ import {
   shortAddress,
   verifyHashOnChain,
 } from "../lib/proofs";
-import { useWallet } from "../components/WalletConnect";
+import { useWallet, WalletConnectButton } from "../components/WalletConnect";
 
 export default function VerifyPage() {
   const fileInputRef = useRef(null);
@@ -138,11 +138,6 @@ export default function VerifyPage() {
             Verify file
           </Link>
         </nav>
-        <div className="walletSummary">
-          <span>Verification mode</span>
-          <strong>Local hash compare</strong>
-          <small>Connect from the bottom-left control</small>
-        </div>
       </aside>
 
       <section className="dashboardView" aria-labelledby="verify-title">
@@ -162,6 +157,7 @@ export default function VerifyPage() {
             <Link className="button buttonPrimary" href="/create">
               Create proof
             </Link>
+            <WalletConnectButton className="button buttonSecondary" />
           </div>
         </header>
 

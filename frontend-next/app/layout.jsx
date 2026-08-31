@@ -1,6 +1,6 @@
 import "./globals.css";
 import PageTransition from "./components/PageTransition";
-import { WalletNotifier, WalletProvider } from "./components/WalletConnect";
+import { WalletProvider } from "./components/WalletConnect";
 
 export const metadata = {
   title: "ProofDrop - Blockchain proof for digital files",
@@ -14,7 +14,6 @@ export default function RootLayout({ children }) {
       <body>
         <WalletProvider>
           <PageTransition>{children}</PageTransition>
-          <WalletNotifier />
         </WalletProvider>
       </body>
     </html>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useRef, useState } from "react";
-import { useWallet } from "../components/WalletConnect";
+import { useWallet, WalletConnectButton } from "../components/WalletConnect";
 import {
   CONTRACT_ADDRESS,
   createProofRecord,
@@ -118,11 +118,6 @@ export default function CreateProofPage() {
           </Link>
           <Link href="/verify">Verify file</Link>
         </nav>
-        <div className="walletSummary">
-          <span>Anchor target</span>
-          <strong>Sepolia</strong>
-          <small>Connect from the bottom-left control</small>
-        </div>
       </aside>
 
       <section className="dashboardView" aria-labelledby="create-title">
@@ -142,6 +137,7 @@ export default function CreateProofPage() {
             <Link className="button buttonPrimary" href="/verify">
               Verify
             </Link>
+            <WalletConnectButton className="button buttonSecondary" />
           </div>
         </header>
 

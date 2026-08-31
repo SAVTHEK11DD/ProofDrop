@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { readProofs, shortHash } from "../lib/proofs";
+import { WalletConnectButton } from "../components/WalletConnect";
 
 const statusOptions = ["All", "Verified", "Local"];
 const networkOptions = ["All", "Sepolia", "Local"];
@@ -63,11 +64,6 @@ export default function DashboardPage() {
           <Link href="/create">Create proof</Link>
           <Link href="/verify">Verify file</Link>
         </nav>
-        <div className="walletSummary">
-          <span>Wallet status</span>
-          <strong>Use notifier</strong>
-          <small>Connect from the bottom-left control</small>
-        </div>
       </aside>
 
       <section className="dashboardView" aria-labelledby="dashboard-title">
@@ -87,6 +83,7 @@ export default function DashboardPage() {
             <Link className="button buttonPrimary" href="/create">
               Create proof
             </Link>
+            <WalletConnectButton className="button buttonSecondary" />
           </div>
         </header>
 
