@@ -502,28 +502,104 @@ h1 {
   color: var(--green);
 }
 
-.proofRail {
+.proofRailMarquee {
   width: min(1180px, 100%);
-  margin: 0 auto;
-  gap: 10px;
-  overflow-x: auto;
-  padding-bottom: 2px;
+  margin: 32px auto 0;
+  overflow: hidden;
+  position: relative;
+  padding: 6px 0 12px;
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 6%,
+    black 94%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 6%,
+    black 94%,
+    transparent 100%
+  );
+}
+
+.proofRailTrack {
+  display: flex;
+  width: max-content;
+  animation: scrollLeftToRight 30s linear infinite;
+  will-change: transform;
+}
+
+.proofRailTrack:hover {
+  animation-play-state: paused;
+}
+
+.proofRailHalf {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+  padding-right: 12px;
 }
 
 .railItem {
-  min-width: 180px;
+  min-width: 175px;
+  display: inline-flex;
+  align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 14px;
   border: 1px solid var(--line);
-  border-radius: 8px;
-  padding: 14px;
-  background: rgba(255, 255, 255, 0.58);
+  border-radius: 9px;
+  padding: 12px 18px;
+  background: rgba(255, 255, 255, 0.76);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.02);
+  transition: transform 180ms ease, border-color 180ms ease, box-shadow 180ms ease;
+  user-select: none;
+  flex-shrink: 0;
 }
 
-.railItem span {
-  color: var(--amber);
+.railItem:hover {
+  border-color: rgba(8, 127, 122, 0.4);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 4px 14px rgba(8, 127, 122, 0.12);
+  transform: translateY(-2px);
+}
+
+.railNumber {
+  color: var(--teal);
   font-family: "IBM Plex Mono", Consolas, monospace;
-  font-size: 0.78rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.railItem strong {
+  color: var(--ink);
+  font-size: 0.92rem;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.railArrow {
+  display: grid;
+  place-items: center;
+  color: #9da3a6;
+  transition: color 150ms ease, transform 150ms ease;
+}
+
+.railItem:hover .railArrow {
+  color: var(--teal);
+  transform: translateX(2px);
+}
+
+@keyframes scrollLeftToRight {
+  0% {
+    transform: translateX(-50%);
+  }
+  100% {
+    transform: translateX(0%);
+  }
 }
 
 .section {

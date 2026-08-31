@@ -104,13 +104,30 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="proofRail" aria-label="ProofDrop proof flow">
-          {proofSteps.map((step, index) => (
-            <div className="railItem" key={step}>
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              <strong>{step}</strong>
-            </div>
-          ))}
+        <div className="proofRailMarquee" aria-label="ProofDrop proof flow">
+          <div className="proofRailTrack">
+            {[0, 1].map((halfIndex) => (
+              <div
+                className="proofRailHalf"
+                key={halfIndex}
+                aria-hidden={halfIndex > 0 ? "true" : undefined}
+              >
+                {[0, 1].map((setIndex) =>
+                  proofSteps.map((step, index) => (
+                    <div className="railItem" key={`${halfIndex}-${setIndex}-${step}`}>
+                      <span className="railNumber">{String(index + 1).padStart(2, "0")}</span>
+                      <strong>{step}</strong>
+                      <span className="railArrow" aria-hidden="true">
+                        <svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M6 3l5 5-5 5" />
+                        </svg>
+                      </span>
+                    </div>
+                  ))
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
